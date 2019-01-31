@@ -3,16 +3,41 @@ import Amplify from 'aws-amplify';
 import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 import { Route, Switch, Link } from 'react-router-dom';
-import { SideNav, Nav } from 'react-sidenav';
+import { SideNav, Nav as BaseNav, NavIcon } from 'react-sidenav';
 import { Icon } from 'react-icons-kit';
-import { dashboard } from 'react-icons-kit/fa/dashboard';
-import { users } from 'react-icons-kit/fa/users';
-import { shoppingCart } from 'react-icons-kit/fa/shoppingCart';
-import { cubes } from 'react-icons-kit/fa/cubes';
-import { circleO } from 'react-icons-kit/fa/circleO';
+import { home } from 'react-icons-kit/fa/home';
+import { user } from 'react-icons-kit/fa/user';
+import { group } from 'react-icons-kit/fa/group';
+import { ic_settings } from 'react-icons-kit/md/ic_settings';
+
+import styled from 'styled-components';
 
 import Home from './Home';
 Amplify.configure(aws_exports);
+
+const theme = {
+  hoverBgColor: '#f5f5f5',
+  selectionBgColor: '#f5f5f5',
+  selectionIconColor: '#03A9F4'
+};
+
+export const Navigation = styled.div`
+  width: 100px;
+  background: #fff;
+  height: 100%;
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
+`;
+
+const Nav = styled(BaseNav)`
+  flex-direction: column;
+  height: 100px;
+`;
+
+export const AppContainer = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+`;
 
 class App extends Component {
   constructor(props) {
@@ -23,48 +48,41 @@ class App extends Component {
   }
 
   onItemSelection = arg => {
-    console.log(arg);
+    if (arg.path === 'home') this.props.history.push('');
+    else this.props.history.push('/' + arg.path);
   };
 
   render() {
     return (
-      <div>
-        <SideNav
-          defaultSelectedPath="1"
-          // theme={theme}
-          onItemSelection={this.onItemSelection}
-        >
-          <Nav id="1">
-            <div>
-              <Icon icon={dashboard} />
-            </div>
-            <div>Dashboard</div>
-          </Nav>
-          <Nav id="2">
-            <div>
-              <Icon icon={users} />
-            </div>
-            <div>Users</div>
-          </Nav>
-          <Nav id="3">
-            <div>
-              <Icon icon={shoppingCart} />
-            </div>
-            <div>Deliveries</div>
-          </Nav>
-          <Nav id="4">
-            <div>
-              <Icon icon={circleO} />
-            </div>
-            <div>Orders</div>
-          </Nav>
-          <Nav id="5">
-            <div>
-              <Icon icon={cubes} />
-            </div>
-            <div>Transactions</div>
-          </Nav>
-        </SideNav>
+      <AppContainer>
+        <Navigation>
+          <SideNav
+            defaultSelectedPath="1"
+            theme={theme}
+            onItemSelection={this.onItemSelection}
+          >
+            <Nav id="home">
+              <NavIcon>
+                <Icon size={32} icon={home} />
+              </NavIcon>
+            </Nav>
+            <Nav id="profile">
+              <NavIcon>
+                <Icon size={32} icon={user} />
+              </NavIcon>
+            </Nav>
+            <Nav id="groups">
+              <NavIcon>
+                <Icon size={32} icon={group} />
+              </NavIcon>
+            </Nav>
+            <Nav id="settings">
+              <NavIcon>
+                <Icon size={32} icon={ic_settings} />
+              </NavIcon>
+            </Nav>
+          </SideNav>
+        </Navigation>
         <Switch>
           <Route
             exact
@@ -82,7 +100,7 @@ class App extends Component {
             )}
           />
         </Switch>
-      </div>
+      </AppContainer>
     );
   }
 }

@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/auth/cognito46197493-cloudformation-template.yml",
 				"logicalId": "authcognito46197493"
 			},
-			"lastPushTimeStamp": "2019-01-28T22:07:50.946Z",
+			"lastPushTimeStamp": "2019-02-04T20:58:48.956Z",
 			"output": {
 				"AppClientSecret": "62uj6ab79l4a6sf4rk22pt2rbibme9kkr3ivhs7nqu1tcd2cvar",
 				"UserPoolId": "eu-west-1_eFoEQcmcB",
@@ -33,42 +33,79 @@
 		}
 	},
 	"storage": {
-		"users": {
+		"3ypUsers": {
 			"service": "DynamoDB",
-			"providerPlugin": "awscloudformation"
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/3ypUsers-cloudformation-template.json",
+				"logicalId": "storage3ypUsers"
+			},
+			"lastPushTimeStamp": "2019-02-04T20:58:48.970Z",
+			"output": {
+				"PartitionKeyName": "userId",
+				"Region": "eu-west-1",
+				"Arn": "arn:aws:dynamodb:eu-west-1:802863750415:table/3ypUsers",
+				"PartitionKeyType": "S",
+				"Name": "3ypUsers"
+			},
+			"lastPushDirHash": "cN/+i4NlNxXwM+sUF//fnFc/us0="
 		}
 	},
 	"function": {
-		"usersCRUD": {
+		"3ypUsersCRUD": {
 			"service": "Lambda",
 			"providerPlugin": "awscloudformation",
 			"build": true,
 			"dependsOn": [
 				{
 					"category": "storage",
-					"resourceName": "users",
+					"resourceName": "3ypUsers",
 					"attributes": [
 						"Name",
 						"Arn"
 					]
 				}
-			]
+			],
+			"lastBuildTimeStamp": "2019-02-04T20:56:04.442Z",
+			"lastPackageTimeStamp": "2019-02-04T20:56:11.867Z",
+			"distZipFilename": "3ypUsersCRUD-1549313764-latest-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypUsersCRUD-cloudformation-template.json",
+				"logicalId": "function3ypUsersCRUD"
+			},
+			"lastPushTimeStamp": "2019-02-04T20:58:48.970Z",
+			"output": {
+				"Region": "eu-west-1",
+				"Arn": "arn:aws:lambda:eu-west-1:802863750415:function:3ypUsersCRUD",
+				"Name": "3ypUsersCRUD"
+			},
+			"lastPushDirHash": "BlMdpug4nMWZ707U1Nqtbyucl4Q="
 		}
 	},
 	"api": {
-		"api00dee516": {
+		"3YP": {
 			"service": "API Gateway",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [
 				{
 					"category": "function",
-					"resourceName": "usersCRUD",
+					"resourceName": "3ypUsersCRUD",
 					"attributes": [
 						"Name",
 						"Arn"
 					]
 				}
-			]
+			],
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/api/3YP-cloudformation-template.json",
+				"logicalId": "api3YP"
+			},
+			"lastPushTimeStamp": "2019-02-04T20:58:48.970Z",
+			"output": {
+				"ApiName": "3YP",
+				"RootUrl": "https://vzp0iao38b.execute-api.eu-west-1.amazonaws.com/Prod"
+			},
+			"lastPushDirHash": "oBO+cUrsWMeJI53smomOd85Qw0M="
 		}
 	}
 }

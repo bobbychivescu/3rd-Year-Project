@@ -2,18 +2,18 @@
     "paths": [
         {
             "name": "/profile",
-            "lambdaFunction": "usersCRUD",
+            "lambdaFunction": "3ypUsersCRUD",
             "privacy": {
                 "private": true,
                 "auth": "rw"
             }
         }
     ],
-    "resourceName": "api00dee516",
-    "apiName": "3rdyearproject00dee516",
+    "resourceName": "3YP",
+    "apiName": "3rdyearprojectba04b252",
     "functionArns": [
         {
-            "lambdaFunction": "usersCRUD"
+            "lambdaFunction": "3ypUsersCRUD"
         }
     ],
     "privacy": {
@@ -25,7 +25,7 @@
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "usersCRUD",
+            "resourceName": "3ypUsersCRUD",
             "attributes": [
                 "Name",
                 "Arn"

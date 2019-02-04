@@ -1,5 +1,5 @@
 {
-    "tableName": "users",
+    "tableName": "3ypUsers",
     "partitionKeyName": "userId",
     "partitionKeyType": "S"
 }

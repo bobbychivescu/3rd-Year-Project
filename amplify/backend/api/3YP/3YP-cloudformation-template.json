@@ -7,15 +7,15 @@
         
     
     
-          "functionusersCRUDName": {
+          "function3ypUsersCRUDName": {
             "Type": "String",
-            "Default": "functionusersCRUDName"
+            "Default": "function3ypUsersCRUDName"
           },
         
           
-          "functionusersCRUDArn": {
+          "function3ypUsersCRUDArn": {
             "Type": "String",
-            "Default": "functionusersCRUDArn"
+            "Default": "function3ypUsersCRUDArn"
           }
         
           
@@ -25,13 +25,13 @@
     "Resources": {
         
         
-        "PolicyAPIGW3rdyearproject00dee516auth": {
+        "PolicyAPIGW3rdyearprojectba04b252auth": {
             "DependsOn": [
-              "3rdyearproject00dee516"
+              "3rdyearprojectba04b252"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGW3rdyearproject00dee516auth",
+              "PolicyName": "PolicyAPIGW3rdyearprojectba04b252auth",
               "Roles": [
                 "a3rdyearproject-20190128153122-authRole"
               ],
@@ -61,7 +61,7 @@
                             },
                             ":",
                             {
-                              "Ref": "3rdyearproject00dee516"
+                              "Ref": "3rdyearprojectba04b252"
                             },
                             "/Prod/*",
                             "/profile/*"
@@ -82,7 +82,7 @@
                             },
                             ":",
                             {
-                              "Ref": "3rdyearproject00dee516"
+                              "Ref": "3rdyearprojectba04b252"
                             },
                             "/Prod/*",
                             "/profile"
@@ -103,16 +103,16 @@
           },
         
         
-      "3rdyearproject00dee516": {
+      "3rdyearprojectba04b252": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
           "Description": "",
-          "Name": "3rdyearproject00dee516",
+          "Name": "3rdyearprojectba04b252",
           "Body": {
             "swagger": "2.0",
             "info": {
               "version": "2018-05-24T17:52:00Z",
-              "title": "3rdyearproject00dee516"
+              "title": "3rdyearprojectba04b252"
             },
             "host": {
                 "Fn::Join": [
@@ -224,7 +224,7 @@
                             
                             {
                                 
-                                "Ref": "functionusersCRUDArn"
+                                "Ref": "function3ypUsersCRUDArn"
                             },
                             
                             "/invocations"
@@ -329,7 +329,7 @@
                           
                           {
                             
-                            "Ref": "functionusersCRUDArn"
+                            "Ref": "function3ypUsersCRUDArn"
                           },
                           
                           "/invocations"
@@ -386,12 +386,12 @@
                   
         
         
-        "functionusersCRUDPermission3rdyearproject00dee516": {
+        "function3ypUsersCRUDPermission3rdyearprojectba04b252": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
                     {
-                        "Ref":  "functionusersCRUDName"
+                        "Ref":  "function3ypUsersCRUDName"
                     },
                     
                     "Action": "lambda:InvokeFunction",
@@ -410,7 +410,7 @@
                             },
                             ":",
                             {
-                                "Ref": "3rdyearproject00dee516"
+                                "Ref": "3rdyearprojectba04b252"
                             },
                             "/*/*/*"
                         ]
@@ -423,13 +423,13 @@
         
         
         
-      "DeploymentAPIGW3rdyearproject00dee516": {
+      "DeploymentAPIGW3rdyearprojectba04b252": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
           "StageName": "Prod",
           "RestApiId": {
-            "Ref": "3rdyearproject00dee516"
+            "Ref": "3rdyearprojectba04b252"
           }
         }
       }
@@ -437,11 +437,11 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "3rdyearproject00dee516"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "3rdyearprojectba04b252"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
         },
         "ApiName": {
           "Description": "API Friendly name",
-          "Value": "api00dee516"
+          "Value": "3YP"
         }
     }
   }

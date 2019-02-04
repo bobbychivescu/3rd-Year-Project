@@ -6,7 +6,21 @@ const awsmobile = {
     'eu-west-1:d443d121-34b7-4767-ab33-b45f67d0db1b',
   aws_cognito_region: 'eu-west-1',
   aws_user_pools_id: 'eu-west-1_eFoEQcmcB',
-  aws_user_pools_web_client_id: '1sosna8rn0puv2savnbgqp8bvs'
+  aws_user_pools_web_client_id: '1sosna8rn0puv2savnbgqp8bvs',
+  aws_dynamodb_all_tables_region: 'eu-west-1',
+  aws_dynamodb_table_schemas: [
+    {
+      tableName: '3ypUsers',
+      region: 'eu-west-1'
+    }
+  ],
+  aws_cloud_logic_custom: [
+    {
+      name: '3YP',
+      endpoint: 'https://vzp0iao38b.execute-api.eu-west-1.amazonaws.com/Prod',
+      region: 'eu-west-1'
+    }
+  ]
 };
 
 export default awsmobile;

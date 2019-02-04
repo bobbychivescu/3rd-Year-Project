@@ -127,6 +127,57 @@
 					"authSelections": "identityPoolAndUserPool"
 				}
 			}
+		},
+		"storage3ypUsers": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/3ypUsers-cloudformation-template.json",
+				"Parameters": {
+					"tableName": "3ypUsers",
+					"partitionKeyName": "userId",
+					"partitionKeyType": "S"
+				}
+			}
+		},
+		"function3ypUsersCRUD": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypUsersCRUD-cloudformation-template.json",
+				"Parameters": {
+					"storage3ypUsersName": {
+						"Fn::GetAtt": [
+							"storage3ypUsers",
+							"Outputs.Name"
+						]
+					},
+					"storage3ypUsersArn": {
+						"Fn::GetAtt": [
+							"storage3ypUsers",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
+		"api3YP": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/api/3YP-cloudformation-template.json",
+				"Parameters": {
+					"function3ypUsersCRUDName": {
+						"Fn::GetAtt": [
+							"function3ypUsersCRUD",
+							"Outputs.Name"
+						]
+					},
+					"function3ypUsersCRUDArn": {
+						"Fn::GetAtt": [
+							"function3ypUsersCRUD",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
 		}
 	},
 	"Outputs": {

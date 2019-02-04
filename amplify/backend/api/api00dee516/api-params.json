@@ -1,0 +1,35 @@
+{
+    "paths": [
+        {
+            "name": "/profile",
+            "lambdaFunction": "usersCRUD",
+            "privacy": {
+                "private": true,
+                "auth": "rw"
+            }
+        }
+    ],
+    "resourceName": "api00dee516",
+    "apiName": "3rdyearproject00dee516",
+    "functionArns": [
+        {
+            "lambdaFunction": "usersCRUD"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 0,
+        "authRoleName": "a3rdyearproject-20190128153122-authRole",
+        "unAuthRoleName": "a3rdyearproject-20190128153122-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "usersCRUD",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Amplify from 'aws-amplify';
+import './App.css';
+import Amplify, { API } from 'aws-amplify';
 import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 import { Route, Switch, Link } from 'react-router-dom';
@@ -8,24 +9,22 @@ import { home } from 'react-icons-kit/fa/home';
 import { userCircle } from 'react-icons-kit/fa/userCircle';
 import { group } from 'react-icons-kit/fa/group';
 import { ic_settings } from 'react-icons-kit/md/ic_settings';
-import { Nav, NavItem, Container, Row, Col } from 'reactstrap';
-import styled from 'styled-components';
+import { Nav, NavItem, Container } from 'reactstrap';
 
 import Home from './Home';
+import Profile from './Profile';
+
 Amplify.configure(aws_exports);
 
-const IconColored = styled(Icon)`
-  color: red;
-  padding-top: 60%;
-  padding-bottom: 60%;
-  
-  @media (max-width: 768px) {
-    padding-top: 0%;
-    padding-bottom: 0%;
-  }
-  
-  }
-`;
+const Item = props => {
+  return (
+    <NavItem className="text-center">
+      <Link to={props.path}>
+        <Icon size="32" icon={props.icon} />
+      </Link>
+    </NavItem>
+  );
+};
 
 class App extends Component {
   constructor(props) {
@@ -33,67 +32,53 @@ class App extends Component {
     this.state = {
       user: {}
     };
-    console.log(window.innerHeight);
+  }
+
+  async componentDidMount() {
+    const response = await API.get('3YP', '/profile');
+    if (response.hasOwnProperty('nickname')) {
+      this.setState({ user: response });
+    } else {
+      console.log('no data');
+      // first login
+      // do mail and random nickname
+    }
   }
 
   render() {
     return (
-      <Container fluid>
-        <Row>
-          <Col xs="12" md="1">
-            <Nav>
-              <Row>
-                <Col xs="3" md="12">
-                  <NavItem>
-                    <Link to="/">
-                      <IconColored size={'60%'} icon={home} />
-                    </Link>
-                  </NavItem>
-                </Col>
-                <Col xs="3" md="12">
-                  <NavItem>
-                    <Link to="/profile">
-                      <IconColored size={'60%'} icon={userCircle} />
-                    </Link>
-                  </NavItem>
-                </Col>
-                <Col xs="3" md="12">
-                  <NavItem>
-                    <Link to="/groups">
-                      <IconColored size={'60%'} icon={group} />
-                    </Link>
-                  </NavItem>
-                </Col>
-                <Col xs="3" md="12">
-                  <NavItem>
-                    <Link to="/settings">
-                      <IconColored size={'60%'} icon={ic_settings} />
-                    </Link>
-                  </NavItem>
-                </Col>
-              </Row>
-            </Nav>
-          </Col>
-          <Col>
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => <Home {...this.props} user={this.state.user} />}
-              />
-              {/*<Route path='/groups' component={Groups}/>*/}
-              {/*<Route path='/settings' component={Settings}/>*/}
-              <Route
-                path="*"
-                component={() => (
-                  <div>
-                    <h1>404 Not Found!</h1>
-                  </div>
-                )}
-              />
-            </Switch>
-          </Col>
-        </Row>
+      <Container fluid className="h-100">
+        <aside className="sidebar">
+          <Nav className="flex-md-column w-100 h-100 justify-content-around">
+            <Item path="/" icon={home} />
+            <Item path="/profile" icon={userCircle} />
+            <Item path="/groups" icon={group} />
+            <Item path="/settings" icon={ic_settings} />
+          </Nav>
+        </aside>
+        <main className="content">
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => <Home {...this.props} user={this.state.user} />}
+            />
+            <Route
+              path="/profile"
+              render={() => <Profile {...this.props} user={this.state.user} />}
+            />
+            {/*<Route path='/groups' component={Groups}/>*/}
+            {/*<Route path='/settings' component={Settings}/>*/}
+            <Route
+              path="*"
+              component={() => (
+                <div>
+                  <h1>404 Not Found!</h1>
+                </div>
+              )}
+            />
+          </Switch>
+        </main>
       </Container>
     );
   }

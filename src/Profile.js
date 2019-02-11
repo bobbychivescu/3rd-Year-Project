@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
-
-const AppContainer = styled.div`
-  height: 100%;
-  width: 100%;
-  background-color: red;
-`;
+import { Container, Col, Row, Spinner } from 'reactstrap';
+import ProfileInfo from './ProfileInfo';
 
 class Profile extends Component {
   constructor(props) {
@@ -14,50 +9,20 @@ class Profile extends Component {
 
   render() {
     return (
-      <main>
-        {this.props.user.nickname}
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-        <h1>asdadad</h1>
-      </main>
+      <Container fluid>
+        <Row>
+          <Col xs="12" md="4" className="my-3">
+            <img src="https://www.petmd.com/sites/default/files/Acute-Dog-Diarrhea-47066074.jpg" />
+          </Col>
+          <Col xs="12" md="auto">
+            {this.props.user ? (
+              <ProfileInfo user={this.props.user} />
+            ) : (
+              <Spinner color="warning" />
+            )}
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

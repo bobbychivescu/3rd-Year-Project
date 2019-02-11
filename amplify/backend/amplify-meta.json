@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/auth/cognito46197493-cloudformation-template.yml",
 				"logicalId": "authcognito46197493"
 			},
-			"lastPushTimeStamp": "2019-02-11T13:02:06.597Z",
+			"lastPushTimeStamp": "2019-02-11T22:59:46.163Z",
 			"output": {
 				"AppClientSecret": "62uj6ab79l4a6sf4rk22pt2rbibme9kkr3ivhs7nqu1tcd2cvar",
 				"UserPoolId": "eu-west-1_eFoEQcmcB",
@@ -40,7 +40,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/3ypUsers-cloudformation-template.json",
 				"logicalId": "storage3ypUsers"
 			},
-			"lastPushTimeStamp": "2019-02-11T13:02:06.601Z",
+			"lastPushTimeStamp": "2019-02-11T22:59:46.163Z",
 			"output": {
 				"PartitionKeyName": "userId",
 				"Region": "eu-west-1",
@@ -67,19 +67,19 @@
 				}
 			],
 			"lastBuildTimeStamp": "2019-02-11T12:42:51.765Z",
-			"lastPackageTimeStamp": "2019-02-11T12:42:59.315Z",
-			"distZipFilename": "3ypUsersCRUD-1549888971-latest-build.zip",
+			"lastPackageTimeStamp": "2019-02-11T22:58:40.014Z",
+			"distZipFilename": "3ypUsersCRUD-1549925913-latest-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypUsersCRUD-cloudformation-template.json",
 				"logicalId": "function3ypUsersCRUD"
 			},
-			"lastPushTimeStamp": "2019-02-11T13:02:06.602Z",
+			"lastPushTimeStamp": "2019-02-11T22:59:46.166Z",
 			"output": {
 				"Region": "eu-west-1",
 				"Arn": "arn:aws:lambda:eu-west-1:802863750415:function:3ypUsersCRUD",
 				"Name": "3ypUsersCRUD"
 			},
-			"lastPushDirHash": "5yAX0a3EyDBAoWKMxWvlAGv4Bwk="
+			"lastPushDirHash": "X3jVVSWv+Hva/q4hXBarSZzN7U4="
 		},
 		"3ypSendMail": {
 			"service": "Lambda",
@@ -93,7 +93,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypSendMail-cloudformation-template.json",
 				"logicalId": "function3ypSendMail"
 			},
-			"lastPushTimeStamp": "2019-02-11T13:02:06.604Z",
+			"lastPushTimeStamp": "2019-02-11T22:59:46.165Z",
 			"output": {
 				"Region": "eu-west-1",
 				"Arn": "arn:aws:lambda:eu-west-1:802863750415:function:3ypSendMail",
@@ -128,7 +128,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/api/3YP-cloudformation-template.json",
 				"logicalId": "api3YP"
 			},
-			"lastPushTimeStamp": "2019-02-11T13:02:06.604Z",
+			"lastPushTimeStamp": "2019-02-11T22:59:46.165Z",
 			"output": {
 				"ApiName": "3YP",
 				"RootUrl": "https://vzp0iao38b.execute-api.eu-west-1.amazonaws.com/Prod"

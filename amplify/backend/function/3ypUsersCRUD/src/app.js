@@ -154,6 +154,7 @@ app.post(path, function(req, res) {
 app.post(path + '/new', function(req, res) {
   req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
   req.body['nickname'] = generateName();
+  req.body['bio'] = 'no bio added';
 
   let putItemParams = {
     TableName: tableName,

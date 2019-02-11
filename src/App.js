@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Amplify, { API } from 'aws-amplify';
+import Amplify, { API, Auth } from 'aws-amplify';
 import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 import { Route, Switch, Link } from 'react-router-dom';
@@ -39,11 +39,18 @@ class App extends Component {
     if (response.hasOwnProperty('nickname')) {
       this.setState({ user: response });
     } else {
-      console.log('no data');
       // first login
       const response2 = await API.post('3YP', '/profile/new', {});
       const response3 = await API.get('3YP', '/profile');
-      //mail to AUTh.email with response.nickname
+      const text = 'Welcome to the app ' + response3.nickname;
+      const user = await Auth.currentAuthenticatedUser();
+      const response4 = await API.post('3YP', '/email', {
+        body: {
+          to: user.attributes.email,
+          subject: 'Welcome',
+          text: text
+        }
+      });
       this.setState({ user: response3 });
     }
   }

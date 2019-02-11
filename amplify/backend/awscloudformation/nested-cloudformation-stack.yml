@@ -159,6 +159,13 @@
 				}
 			}
 		},
+		"function3ypSendMail": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypSendMail-cloudformation-template.json",
+				"Parameters": {}
+			}
+		},
 		"api3YP": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -173,6 +180,18 @@
 					"function3ypUsersCRUDArn": {
 						"Fn::GetAtt": [
 							"function3ypUsersCRUD",
+							"Outputs.Arn"
+						]
+					},
+					"function3ypSendMailName": {
+						"Fn::GetAtt": [
+							"function3ypSendMail",
+							"Outputs.Name"
+						]
+					},
+					"function3ypSendMailArn": {
+						"Fn::GetAtt": [
+							"function3ypSendMail",
 							"Outputs.Arn"
 						]
 					}

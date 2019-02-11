@@ -7,6 +7,14 @@
                 "private": true,
                 "auth": "rw"
             }
+        },
+        {
+            "name": "/email",
+            "lambdaFunction": "3ypSendMail",
+            "privacy": {
+                "private": true,
+                "auth": "rw"
+            }
         }
     ],
     "resourceName": "3YP",
@@ -14,10 +22,13 @@
     "functionArns": [
         {
             "lambdaFunction": "3ypUsersCRUD"
+        },
+        {
+            "lambdaFunction": "3ypSendMail"
         }
     ],
     "privacy": {
-        "auth": 1,
+        "auth": 2,
         "unauth": 0,
         "authRoleName": "a3rdyearproject-20190128153122-authRole",
         "unAuthRoleName": "a3rdyearproject-20190128153122-unauthRole"
@@ -30,6 +41,15 @@
                 "Name",
                 "Arn"
             ]
+        },
+        {
+            "category": "function",
+            "resourceName": "3ypSendMail",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
         }
-    ]
+    ],
+    "uuid": "27638fa4"
 }

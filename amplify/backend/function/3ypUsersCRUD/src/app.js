@@ -9,6 +9,7 @@ const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 var bodyParser = require('body-parser')
 var express = require('express')
+var generateName = require('sillyname');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -145,6 +146,29 @@ app.post(path, function(req, res) {
     }
   });
 });
+
+/************************************
+ * HTTP post method for new user *
+ *************************************/
+
+app.post(path + '/new', function(req, res) {
+  req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
+  req.body['nickname'] = generateName();
+
+  let putItemParams = {
+    TableName: tableName,
+    Item: req.body
+  }
+
+  dynamodb.put(putItemParams, (err, data) => {
+    if(err) {
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'post call succeed!', url: req.url, data: data})
+    }
+  });
+});
+
 
 /**************************************
  * HTTP remove method to delete object *

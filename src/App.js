@@ -41,7 +41,10 @@ class App extends Component {
     } else {
       console.log('no data');
       // first login
-      // do mail and random nickname
+      const response2 = await API.post('3YP', '/profile/new', {});
+      const response3 = await API.get('3YP', '/profile');
+      //mail to AUTh.email with response.nickname
+      this.setState({ user: response3 });
     }
   }
 

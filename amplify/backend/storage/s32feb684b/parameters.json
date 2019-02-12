@@ -1,0 +1,9 @@
+{
+    "bucketName": "3rdyearproject073248366c144452bb2fafc07aa28f6d",
+    "authPolicyName": "s3_amplify_2feb684b",
+    "unauthPolicyName": "s3_amplify_2feb684b",
+    "authRoleName": "a3rdyearproject-20190128153122-authRole",
+    "unauthRoleName": "a3rdyearproject-20190128153122-unauthRole",
+    "authPermissions": "rw",
+    "unauthPermissions": ""
+}

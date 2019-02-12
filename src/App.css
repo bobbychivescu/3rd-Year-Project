@@ -21,6 +21,10 @@
   .content {
     margin-left: 0;
   }
+
+  .hide-in-mobile {
+    display: none;
+  }
 }
 
 img {

@@ -1,10 +1,4 @@
-/*
-Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-    http://aws.amazon.com/apache2.0/
-or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and limitations under the License.
-*/
+
 const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 var bodyParser = require('body-parser')
@@ -21,9 +15,6 @@ let tableName = "3ypUsers";
 const partitionKeyName = "userId";
 const partitionKeyType = "S";
 const path = "/profile";
-const UNAUTH = 'UNAUTH';
-const hashKeyPath = '/:' + partitionKeyName;
-// declare a new express app
 var app = express()
 app.use(bodyParser.json())
 app.use(awsServerlessExpressMiddleware.eventContext())
@@ -35,49 +26,6 @@ app.use(function(req, res, next) {
   next()
 });
 
-// convert url string param to expected Type
-const convertUrlType = (param, type) => {
-  switch(type) {
-    case "N":
-      return Number.parseInt(param);
-    default:
-      return param;
-  }
-}
-
-/********************************
- * HTTP Get method for list objects * see later for contacts
- ********************************/
-
-app.get(path + hashKeyPath, function(req, res) {
-  var condition = {}
-  condition[partitionKeyName] = {
-    ComparisonOperator: 'EQ'
-  }
-
-  if (userIdPresent && req.apiGateway) {
-    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
-  } else {
-    try {
-      condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
-    } catch(err) {
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
-
-  let queryParams = {
-    TableName: tableName,
-    KeyConditions: condition
-  }
-
-  dynamodb.query(queryParams, (err, data) => {
-    if (err) {
-      res.json({error: 'Could not load items: ' + err});
-    } else {
-      res.json(data.Items);
-    }
-  });
-});
 
 /*****************************************
  * HTTP Get method for get single object *
@@ -107,51 +55,57 @@ app.get(path, function(req, res) {
 
 
 /************************************
- * HTTP put method for insert object * same as the one below???
+ * HTTP put method for edit user
  *************************************/
 
 app.put(path, function(req, res) {
-  req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
 
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
-  }
-  dynamodb.put(putItemParams, (err, data) => {
-    if(err) {
-      res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
+    Key: {
+      userId: req.apiGateway.event.requestContext.identity.cognitoIdentityId
     }
-  });
-});
-
-/************************************
- * HTTP post method for insert object *
- *************************************/
-
-app.post(path, function(req, res) {
-  req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
-
-  let putItemParams = {
-    TableName: tableName,
-    Item: req.body
   }
 
-  dynamodb.put(putItemParams, (err, data) => {
-    if(err) {
-      res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'post call succeed!', url: req.url, data: data})
+  let expression = 'set ';
+  let values = {};
+
+  for (var property in req.body) {
+    if (req.body.hasOwnProperty(property)) {
+      if(expression.length > 4) //something was added
+        expression += ', ';
+
+      expression += (property + ' = :' + property);
+      values[':' + property] = req.body[property];
     }
-  });
+  }
+
+  putItemParams['UpdateExpression'] = expression;
+  putItemParams['ExpressionAttributeValues'] = values;
+
+  console.log(putItemParams);
+
+  if(expression.length > 4) {
+    dynamodb.update(putItemParams, (err, data) => {
+      if(err) {
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'put call succeed!', url: req.url, data: data})
+      }
+    });
+  } else {
+    res.json({status: 'nothing changed', url: req.url});
+  }
+
+
 });
+
 
 /************************************
  * HTTP post method for new user *
  *************************************/
 
-app.post(path + '/new', function(req, res) {
+app.post(path, function(req, res) {
   req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
   req.body['nickname'] = generateName();
   req.body['bio'] = 'no bio added';
@@ -197,8 +151,5 @@ app.listen(3000, function() {
   console.log("App started")
 });
 
-// Export the app object. When executing the application local this does nothing. However,
-// to port it to AWS Lambda we will create a wrapper around that will load the app from
-// this file
 module.exports = app
 

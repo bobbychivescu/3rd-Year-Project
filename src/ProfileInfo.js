@@ -23,15 +23,15 @@ class ProfileInfo extends Component {
   };
 
   save = async () => {
-    const response = await API.post('3YP', '/profile', {
-      body: {
-        nickname: this.state.nickname
-          ? this.state.nickname
-          : this.props.user.nickname,
-        bio: this.state.bio ? this.state.bio : this.props.user.bio
-      }
+    const toEdit = {};
+    if (this.state.nickname) toEdit['nickname'] = this.state.nickname;
+    if (this.state.bio) toEdit['bio'] = this.state.bio;
+
+    const response = await API.put('3YP', '/profile', {
+      body: toEdit
     });
-    window.location.reload();
+    console.log(response);
+    //window.location.reload();
   };
 
   toggle = () => {

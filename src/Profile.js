@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
-import {
-  Container,
-  Col,
-  Row,
-  Spinner,
-  Card,
-  CardBody,
-  CardTitle,
-  CardText,
-  CardImg,
-  CardSubtitle
-} from 'reactstrap';
+import { Container, Col, Row, Spinner } from 'reactstrap';
 import ProfileInfo from './ProfileInfo';
+import Contacts from './Contacts';
 import { Storage } from 'aws-amplify';
 
 var imageExists = require('image-exists');
@@ -61,22 +51,7 @@ class Profile extends Component {
             <input type="file" accept="image/png" onChange={this.onChange} />
           </Col>
         </Row>
-        <Row>
-          {contacts.map(item => (
-            <Col md="2">
-              <Card>
-                <CardImg top src="/user.png" className="hide-in-mobile" />
-                <CardBody>
-                  <h3>{item}</h3>
-                  <CardSubtitle>Mail?</CardSubtitle>
-                  <CardText className="hide-in-mobile">
-                    TO BE HIDDEN IN MOBILE maybe show in modal?.
-                  </CardText>
-                </CardBody>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+        <Contacts contacts={contacts} />
       </Container>
     );
   }

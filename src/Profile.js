@@ -38,16 +38,16 @@ class Profile extends Component {
     const contacts = ['bob', 'mary', 'jane', 'jphn', 'matanumelungada'];
     return (
       <Container>
-        <Row className="justify-content-md-center">
+        <Row>
           <Col xs="12" md="5" className="my-3 text-center">
-            <img src={this.state.imgUrl} className="img-fluid profile-pic" />
+            <img src={this.state.imgUrl} className="profile-pic" />
             <input
               type="file"
               id="file"
               accept="image/*"
               onChange={this.onChange}
             />
-            <label htmlFor="file" className="btn btn-secondary my-2">
+            <label htmlFor="file" className="btn btn-secondary my-2 bg-orange">
               Choose profile pic
             </label>
             <hr className="hide-in-desktop" />

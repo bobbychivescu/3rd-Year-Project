@@ -10,7 +10,8 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
-  Input
+  Input,
+  Button
 } from 'reactstrap';
 
 class Contacts extends Component {
@@ -50,7 +51,7 @@ class Contacts extends Component {
             })
             .map(item => (
               <Col md="3">
-                <Card className="my-2">
+                <Card className="my-2 bej">
                   <CardImg top src="/user.png" className="hide-in-mobile" />
                   <CardBody>
                     <h3>{item}</h3>
@@ -59,9 +60,12 @@ class Contacts extends Component {
                       TO BE HIDDEN IN MOBILE maybe show in modal?.
                     </CardText>
                   </CardBody>
-                  <button onClick={this.toggle} className="hide-in-desktop">
+                  <Button
+                    onClick={this.toggle}
+                    className="hide-in-desktop bg-orange"
+                  >
                     Show more
-                  </button>
+                  </Button>
                   <Modal
                     centered
                     isOpen={this.state.modal}

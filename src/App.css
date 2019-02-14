@@ -1,14 +1,23 @@
+body {
+  background-color: #fefbd8 !important;
+}
+
 .sidebar {
-  width: 150px;
-  background-color: #f1f1f1;
+  width: 130px;
+  background-color: #e3eaa7;
   position: fixed;
   height: 100%;
   overflow: auto;
 }
 
 .content {
-  margin-left: 150px;
+  margin-left: 130px;
   height: 100%;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 @media screen and (max-width: 768px) {
@@ -23,13 +32,13 @@
   }
 
   .hide-in-mobile {
-    display: none;
+    display: none !important;
   }
 }
 
 @media screen and (min-width: 768px) {
   .hide-in-desktop {
-    display: none;
+    display: none !important;
   }
 
   .half-on-desktop {
@@ -45,4 +54,16 @@
   border: 2px solid #ddd;
   border-radius: 5%;
   padding: 5px;
+}
+
+.bej {
+  background-color: #e3eaa7 !important;
+}
+
+.orange {
+  color: #ff7b25 !important;
+}
+
+.bg-orange {
+  background-color: #ff7b25 !important;
 }

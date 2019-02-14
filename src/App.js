@@ -19,7 +19,7 @@ Amplify.configure(aws_exports);
 const Item = props => {
   return (
     <NavItem className="text-center">
-      <Link to={props.path}>
+      <Link to={props.path} className="orange">
         <Icon size="32" icon={props.icon} />
       </Link>
     </NavItem>
@@ -58,7 +58,7 @@ class App extends Component {
   render() {
     return (
       <Container fluid className="h-100">
-        <aside className="sidebar">
+        <aside className="sidebar my-2">
           <Nav className="flex-md-column w-100 h-100 justify-content-around">
             <Item path="/" icon={home} />
             <Item path="/profile" icon={userCircle} />

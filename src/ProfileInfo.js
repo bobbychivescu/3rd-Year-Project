@@ -59,16 +59,20 @@ class ProfileInfo extends Component {
               />
             </InputGroup>
             <br />
-            <Button onClick={this.save} className="mr-1">
+            <Button onClick={this.save} className="mr-1 bg-orange">
               Save
             </Button>
-            <Button onClick={this.toggle}>Cancel</Button>
+            <Button onClick={this.toggle} className="bg-orange">
+              Cancel
+            </Button>
           </div>
         ) : (
           <div>
             <h1>{user.nickname}</h1>
             <h3>{user.bio}</h3>
-            <Button onClick={this.toggle}>Edit</Button>
+            <Button onClick={this.toggle} className="bg-orange">
+              Edit info
+            </Button>
           </div>
         )}
       </div>

@@ -30,8 +30,7 @@ class ProfileInfo extends Component {
     const response = await API.put('3YP', '/profile', {
       body: toEdit
     });
-    console.log(response);
-    //window.location.reload();
+    window.location.reload();
   };
 
   toggle = () => {

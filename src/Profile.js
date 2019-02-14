@@ -32,13 +32,14 @@ class Profile extends Component {
     const res = await Storage.put(imgPath, file, {
       contentType: 'image/png'
     });
+    window.location.reload();
   };
 
   render() {
     const contacts = ['bob', 'mary', 'jane', 'jphn', 'mata'];
     return (
-      <Container fluid>
-        <Row>
+      <Container>
+        <Row className="justify-content-md-center">
           <Col xs="12" md="4" className="my-3">
             <img src={this.state.imgUrl} />
           </Col>
@@ -48,7 +49,15 @@ class Profile extends Component {
             ) : (
               <Spinner color="warning" />
             )}
-            <input type="file" accept="image/png" onChange={this.onChange} />
+            <input
+              type="file"
+              id="file"
+              accept="image/png"
+              onChange={this.onChange}
+            />
+            <label for="file" className="btn btn-secondary">
+              Choose file
+            </label>
           </Col>
         </Row>
         <Contacts contacts={contacts} />

@@ -18,7 +18,6 @@ class Profile extends Component {
 
   async componentDidMount() {
     const url = await Storage.get(imgPath);
-    console.log(url);
     imageExists(url, result => {
       if (result)
         this.setState({
@@ -30,18 +29,28 @@ class Profile extends Component {
   onChange = async e => {
     const file = e.target.files[0];
     const res = await Storage.put(imgPath, file, {
-      contentType: 'image/png'
+      contentType: file.type
     });
     window.location.reload();
   };
 
   render() {
-    const contacts = ['bob', 'mary', 'jane', 'jphn', 'mata'];
+    const contacts = ['bob', 'mary', 'jane', 'jphn', 'matanumelungada'];
     return (
       <Container>
         <Row className="justify-content-md-center">
-          <Col xs="12" md="4" className="my-3">
-            <img src={this.state.imgUrl} />
+          <Col xs="12" md="5" className="my-3 text-center">
+            <img src={this.state.imgUrl} className="img-fluid profile-pic" />
+            <input
+              type="file"
+              id="file"
+              accept="image/*"
+              onChange={this.onChange}
+            />
+            <label htmlFor="file" className="btn btn-secondary my-2">
+              Choose profile pic
+            </label>
+            <hr className="hide-in-desktop" />
           </Col>
           <Col xs="12" md="auto">
             {this.props.user.nickname ? (
@@ -49,17 +58,9 @@ class Profile extends Component {
             ) : (
               <Spinner color="warning" />
             )}
-            <input
-              type="file"
-              id="file"
-              accept="image/png"
-              onChange={this.onChange}
-            />
-            <label for="file" className="btn btn-secondary">
-              Choose file
-            </label>
           </Col>
         </Row>
+        <hr />
         <Contacts contacts={contacts} />
       </Container>
     );

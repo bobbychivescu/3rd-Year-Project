@@ -59,7 +59,9 @@ class ProfileInfo extends Component {
               />
             </InputGroup>
             <br />
-            <Button onClick={this.save}>Save</Button>
+            <Button onClick={this.save} className="mr-1">
+              Save
+            </Button>
             <Button onClick={this.toggle}>Cancel</Button>
           </div>
         ) : (

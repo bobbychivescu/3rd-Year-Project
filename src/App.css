@@ -31,13 +31,18 @@
   .hide-in-desktop {
     display: none;
   }
-}
 
-img {
-  max-width: 100%;
-  max-height: 100%;
+  .half-on-desktop {
+    width: 50% !important;
+  }
 }
 
 #file {
   display: none;
+}
+
+.profile-pic {
+  border: 2px solid #ddd;
+  border-radius: 5%;
+  padding: 5px;
 }

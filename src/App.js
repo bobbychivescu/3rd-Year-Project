@@ -13,6 +13,7 @@ import { Nav, NavItem, Container } from 'reactstrap';
 
 import Home from './Home';
 import Profile from './Profile';
+import Settings from './Settings';
 
 Amplify.configure(aws_exports);
 
@@ -77,8 +78,11 @@ class App extends Component {
               path="/profile"
               render={() => <Profile {...this.props} user={this.state.user} />}
             />
+            <Route
+              path="/settings"
+              render={() => <Settings {...this.props} user={this.state.user} />}
+            />
             {/*<Route path='/groups' component={Groups}/>*/}
-            {/*<Route path='/settings' component={Settings}/>*/}
             <Route
               path="*"
               component={() => (

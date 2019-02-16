@@ -41,10 +41,15 @@ class App extends Component {
       this.setState({ user: response });
     } else {
       // first login
-      const response2 = await API.post('3YP', '/profile', {});
+      const user = await Auth.currentAuthenticatedUser();
+      const response2 = await API.post('3YP', '/profile', {
+        body: {
+          email: user.attributes.email
+        }
+      });
+      console.log(response2);
       const response3 = await API.get('3YP', '/profile');
       const text = 'Welcome to the app ' + response3.nickname;
-      const user = await Auth.currentAuthenticatedUser();
       const response4 = await API.post('3YP', '/email', {
         body: {
           to: user.attributes.email,

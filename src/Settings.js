@@ -38,12 +38,22 @@ class Settings extends Component {
     });
   };
 
-  toggleEmailNotifications = () => {
-    alert('not yet implemented');
+  toggleEmailNotifications = async () => {
+    const response = await API.put('3YP', '/profile', {
+      body: {
+        emailNotifications: !this.props.user.emailNotifications
+      }
+    });
+    window.location.reload();
   };
 
-  toggleEmailAvailability = () => {
-    alert('not yet implemented');
+  toggleEmailAvailability = async () => {
+    const response = await API.put('3YP', '/profile', {
+      body: {
+        emailPublic: !this.props.user.emailPublic
+      }
+    });
+    window.location.reload();
   };
 
   toggleTCModal = () => {

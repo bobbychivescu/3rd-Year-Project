@@ -1,0 +1,5 @@
+{
+    "tableName": "3ypGroups",
+    "partitionKeyName": "name",
+    "partitionKeyType": "S"
+}

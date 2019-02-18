@@ -15,6 +15,14 @@
                 "private": true,
                 "auth": "rw"
             }
+        },
+        {
+            "name": "/groups",
+            "lambdaFunction": "3ypGroupsCRUD",
+            "privacy": {
+                "private": true,
+                "auth": "rw"
+            }
         }
     ],
     "resourceName": "3YP",
@@ -25,10 +33,13 @@
         },
         {
             "lambdaFunction": "3ypSendMail"
+        },
+        {
+            "lambdaFunction": "3ypGroupsCRUD"
         }
     ],
     "privacy": {
-        "auth": 2,
+        "auth": 3,
         "unauth": 0,
         "authRoleName": "a3rdyearproject-20190128153122-authRole",
         "unAuthRoleName": "a3rdyearproject-20190128153122-unauthRole"
@@ -49,7 +60,15 @@
                 "Name",
                 "Arn"
             ]
+        },
+        {
+            "category": "function",
+            "resourceName": "3ypGroupsCRUD",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
         }
     ],
-    "uuid": "27638fa4"
+    "uuid": "e439c0cf"
 }

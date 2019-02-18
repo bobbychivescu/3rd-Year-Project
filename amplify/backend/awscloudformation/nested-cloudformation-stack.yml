@@ -154,6 +154,17 @@
 				}
 			}
 		},
+		"storage3ypGroups": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/3ypGroups-cloudformation-template.json",
+				"Parameters": {
+					"tableName": "3ypGroups",
+					"partitionKeyName": "name",
+					"partitionKeyType": "S"
+				}
+			}
+		},
 		"function3ypUsersCRUD": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -179,6 +190,26 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypSendMail-cloudformation-template.json",
 				"Parameters": {}
+			}
+		},
+		"function3ypGroupsCRUD": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypGroupsCRUD-cloudformation-template.json",
+				"Parameters": {
+					"storage3ypGroupsName": {
+						"Fn::GetAtt": [
+							"storage3ypGroups",
+							"Outputs.Name"
+						]
+					},
+					"storage3ypGroupsArn": {
+						"Fn::GetAtt": [
+							"storage3ypGroups",
+							"Outputs.Arn"
+						]
+					}
+				}
 			}
 		},
 		"api3YP": {
@@ -207,6 +238,18 @@
 					"function3ypSendMailArn": {
 						"Fn::GetAtt": [
 							"function3ypSendMail",
+							"Outputs.Arn"
+						]
+					},
+					"function3ypGroupsCRUDName": {
+						"Fn::GetAtt": [
+							"function3ypGroupsCRUD",
+							"Outputs.Name"
+						]
+					},
+					"function3ypGroupsCRUDArn": {
+						"Fn::GetAtt": [
+							"function3ypGroupsCRUD",
 							"Outputs.Arn"
 						]
 					}

@@ -14,7 +14,7 @@ import { Nav, NavItem, Container } from 'reactstrap';
 import Home from './Home';
 import Profile from './Profile';
 import Settings from './Settings';
-
+import Groups from './Groups';
 Amplify.configure(aws_exports);
 
 const Item = props => {
@@ -87,7 +87,10 @@ class App extends Component {
               path="/settings"
               render={() => <Settings {...this.props} user={this.state.user} />}
             />
-            {/*<Route path='/groups' component={Groups}/>*/}
+            <Route
+              path="/groups"
+              render={() => <Groups {...this.props} user={this.state.user} />}
+            />
             <Route
               path="*"
               component={() => (

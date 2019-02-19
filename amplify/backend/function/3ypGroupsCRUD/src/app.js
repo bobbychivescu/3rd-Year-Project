@@ -110,9 +110,57 @@ app.get(path + hashKeyPath, function(req, res) {
   });
 });
 
+//put for adding/removing members
+
+app.put(path +'/members' + hashKeyPath, function(req, res) {
+
+  let putItemParams = {
+    TableName: tableName,
+    Key: {
+      name: req.params[partitionKeyName]
+    }
+  }
+
+  let expression = 'add ';
+  let values = {};
+
+  for (var property in req.body) {
+    if (req.body.hasOwnProperty(property)) {
+      if(expression.length > 4) //something was added
+        expression += ', ';
+
+      expression += (property + ' :' + property);
+      values[':' + property] = dynamodb.createSet(req.body[property]);
+    }
+  }
+
+  //who can add new memebers?
+  //values[':createdBy'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
+
+  putItemParams['UpdateExpression'] = expression;
+  putItemParams['ExpressionAttributeValues'] = values;
+  //putItemParams['ConditionExpression'] = 'createdBy = :createdBy';
+
+  console.log(putItemParams);
+
+  if(expression.length > 4) {
+    dynamodb.update(putItemParams, (err, data) => {
+      if(err) {
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'put call succeed!', url: req.url, data: data})
+      }
+    });
+  } else {
+    res.json({status: 'nothing changed', url: req.url});
+  }
+
+
+});
+
 
 /************************************
- * HTTP put method for insert object *
+ * HTTP put method for update object *
  *************************************/
 
 app.put(path + hashKeyPath, function(req, res) {
@@ -166,7 +214,7 @@ app.put(path + hashKeyPath, function(req, res) {
 app.post(path, function(req, res) {
 
   req.body['createdBy'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
-  req.body['members'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId];
+  req.body['members'] = dynamodb.createSet([req.apiGateway.event.requestContext.identity.cognitoIdentityId]);
 
   let putItemParams = {
     TableName: tableName,

@@ -6,7 +6,7 @@ class Groups extends Component {
   }
 
   get = async () => {
-    const response = await API.get('3YP', '/groups/mafia');
+    const response = await API.get('3YP', '/groups/m2afia');
     console.log(response);
   };
 
@@ -18,14 +18,21 @@ class Groups extends Component {
   };
 
   put = async () => {
-    const response = await API.put('3YP', '/groups/mafia', {
+    const response = await API.put('3YP', '/groups/m2afia', {
       body: { endDate: '2000' }
     });
     console.log(response);
   };
 
+  putMemeber = async () => {
+    const response = await API.put('3YP', '/groups/members/m2afia', {
+      body: { members: ['tache', 'misu'] }
+    });
+    console.log(response);
+  };
+
   delete = async () => {
-    const response = await API.del('3YP', '/groups/mafia');
+    const response = await API.del('3YP', '/groups/m2afia');
     console.log(response);
   };
 
@@ -36,6 +43,7 @@ class Groups extends Component {
         <button onClick={this.post}>Post</button>
         <button onClick={this.delete}>Del</button>
         <button onClick={this.put}>Put</button>
+        <button onClick={this.putMemeber}>PutMM</button>
       </div>
     );
   }

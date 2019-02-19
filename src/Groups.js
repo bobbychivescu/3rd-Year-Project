@@ -11,8 +11,8 @@ class Groups extends Component {
   };
 
   getMore = async () => {
-    const response = await API.post('3YP', '/groups/get', {
-      body: {
+    const response = await API.get('3YP', '/groups/get', {
+      queryStringParameters: {
         names: ['mafia', 'm2afia']
       }
     });

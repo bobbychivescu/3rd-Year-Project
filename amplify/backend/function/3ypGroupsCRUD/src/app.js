@@ -43,10 +43,10 @@ app.use(function(req, res, next) {
  * HTTP Get method for list objects *
  ********************************/
 
-app.post(path + '/get', function(req, res) {
+app.get(path + '/get', function(req, res) {
   let params = {};
   params[tableName] = {
-    Keys: req.body['names'].map((item) => {
+    Keys: req.apiGateway.event.multiValueQueryStringParameters.names.map((item) => {
       return {
         name: item
       }

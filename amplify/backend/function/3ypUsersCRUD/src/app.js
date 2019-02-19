@@ -54,6 +54,56 @@ app.get(path, function(req, res) {
 });
 
 
+//put for adding/removing groups, contacts
+
+app.put(path +'/:action', function(req, res) {
+
+  let putItemParams = {
+    TableName: tableName,
+    Key: {
+      userId: req.apiGateway.event.requestContext.identity.cognitoIdentityId
+    }
+  }
+
+  let expression = req.params['action'] + ' ';
+  let l = expression.length;
+  let values = {};
+
+  for (var property in req.body) {
+    if (req.body.hasOwnProperty(property)) {
+      if(expression.length > l) //something was added
+        expression += ', ';
+
+      expression += (property + ' :' + property);
+      values[':' + property] = dynamodb.createSet(req.body[property]);
+    }
+  }
+
+  //who can add new memebers?
+  //values[':createdBy'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
+
+  putItemParams['UpdateExpression'] = expression;
+  putItemParams['ExpressionAttributeValues'] = values;
+  //putItemParams['ConditionExpression'] = 'createdBy = :createdBy';
+
+  console.log(putItemParams);
+
+  if(expression.length > l) {
+    dynamodb.update(putItemParams, (err, data) => {
+      if(err) {
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'put call succeed!', url: req.url, data: data})
+      }
+    });
+  } else {
+    res.json({status: 'nothing changed', url: req.url});
+  }
+
+
+});
+
+
 /************************************
  * HTTP put method for edit user
  *************************************/

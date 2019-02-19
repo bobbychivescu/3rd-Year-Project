@@ -25,12 +25,32 @@ class Groups extends Component {
   };
 
   putMemeber = async () => {
-    const response = await API.put('3YP', '/groups/members/m2afia', {
+    const response = await API.put('3YP', '/groups/add/m2afia', {
       body: { members: ['tache', 'misu'] }
     });
     console.log(response);
   };
 
+  deleteMemeber = async () => {
+    const response = await API.put('3YP', '/groups/delete/m2afia', {
+      body: { members: ['tache', 'misu'] }
+    });
+    console.log(response);
+  };
+
+  putGroupContacts = async () => {
+    const response = await API.put('3YP', '/profile/add', {
+      body: { contacts: ['tache', 'misu'], groups: ['m2afie'] }
+    });
+    console.log(response);
+  };
+
+  deleteGroupContacts = async () => {
+    const response = await API.put('3YP', '/profile/delete', {
+      body: { groups: ['m2afie'] }
+    });
+    console.log(response);
+  };
   delete = async () => {
     const response = await API.del('3YP', '/groups/m2afia');
     console.log(response);
@@ -44,6 +64,9 @@ class Groups extends Component {
         <button onClick={this.delete}>Del</button>
         <button onClick={this.put}>Put</button>
         <button onClick={this.putMemeber}>PutMM</button>
+        <button onClick={this.deleteMemeber}>delMM</button>
+        <button onClick={this.putGroupContacts}>Putgrp</button>
+        <button onClick={this.deleteGroupContacts}>delgrp</button>
       </div>
     );
   }

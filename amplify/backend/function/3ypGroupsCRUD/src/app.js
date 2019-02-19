@@ -112,7 +112,7 @@ app.get(path + hashKeyPath, function(req, res) {
 
 //put for adding/removing members
 
-app.put(path +'/members' + hashKeyPath, function(req, res) {
+app.put(path +'/:action' + hashKeyPath, function(req, res) {
 
   let putItemParams = {
     TableName: tableName,
@@ -121,12 +121,13 @@ app.put(path +'/members' + hashKeyPath, function(req, res) {
     }
   }
 
-  let expression = 'add ';
+  let expression = req.params['action'] + ' ';
+  let l = expression.length;
   let values = {};
 
   for (var property in req.body) {
     if (req.body.hasOwnProperty(property)) {
-      if(expression.length > 4) //something was added
+      if(expression.length > l) //something was added
         expression += ', ';
 
       expression += (property + ' :' + property);
@@ -143,7 +144,7 @@ app.put(path +'/members' + hashKeyPath, function(req, res) {
 
   console.log(putItemParams);
 
-  if(expression.length > 4) {
+  if(expression.length > l) {
     dynamodb.update(putItemParams, (err, data) => {
       if(err) {
         res.json({error: err, url: req.url, body: req.body});

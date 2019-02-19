@@ -26,6 +26,32 @@ app.use(function(req, res, next) {
   next()
 });
 
+//get more users (friends)
+//consider using no input from user
+
+app.get(path + '/contacts', function(req, res) {
+  let params = {};
+  params[tableName] = {
+    Keys: req.apiGateway.event.multiValueQueryStringParameters.ids.map((item) => {
+      return {
+        userId: item
+      }
+    })
+  };
+
+  let q = {
+    RequestItems: params
+  };
+
+  console.log(params);
+  dynamodb.batchGet(q, (err, data) => {
+    if (err) {
+      res.json({error: 'Could not load items: ' + err});
+    } else {
+      res.json(data);
+    }
+  });
+});
 
 /*****************************************
  * HTTP Get method for get single object *

@@ -11,7 +11,7 @@ class Groups extends Component {
   };
 
   getMore = async () => {
-    const response = await API.get('3YP', '/groups/get', {
+    const response = await API.get('3YP', '/groups', {
       queryStringParameters: {
         names: ['mafia', 'm2afia']
       }
@@ -63,6 +63,17 @@ class Groups extends Component {
     const response = await API.del('3YP', '/groups/m2afia');
     console.log(response);
   };
+  getMoreC = async () => {
+    const response = await API.get('3YP', '/profile/contacts', {
+      queryStringParameters: {
+        ids: [
+          'eu-west-1:b8ca0ea7-bee5-455d-927f-91bcb1e9937a',
+          'eu-west-1:d8c090a8-3d22-411f-b4f0-3b77b9aa000e'
+        ]
+      }
+    });
+    console.log(response);
+  };
 
   render() {
     return (
@@ -75,7 +86,7 @@ class Groups extends Component {
         <button onClick={this.deleteMemeber}>delMM</button>
         <button onClick={this.putGroupContacts}>Putgrp</button>
         <button onClick={this.deleteGroupContacts}>delgrp</button>
-        <button onClick={this.getMore}>getMore</button>
+        <button onClick={this.getMoreC}>getMore</button>
       </div>
     );
   }

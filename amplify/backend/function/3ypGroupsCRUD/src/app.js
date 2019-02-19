@@ -38,46 +38,32 @@ app.use(function(req, res, next) {
   next()
 });
 
-// convert url string param to expected Type
-const convertUrlType = (param, type) => {
-  switch(type) {
-    case "N":
-      return Number.parseInt(param);
-    default:
-      return param;
-  }
-}
 
 /********************************
  * HTTP Get method for list objects *
  ********************************/
 
-app.get(path + hashKeyPath, function(req, res) {
-  var condition = {}
-  condition[partitionKeyName] = {
-    ComparisonOperator: 'EQ'
-  }
+app.post(path + '/get', function(req, res) {
+  let params = {};
+  params[tableName] = {
+    Keys: req.body['names'].map((item) => {
+      return {
+        name: item
+      }
+    })
+  };
 
-  if (userIdPresent && req.apiGateway) {
-    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
-  } else {
-    try {
-      condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
-    } catch(err) {
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
+  let q = {
+    RequestItems: params
+  };
 
-  let queryParams = {
-    TableName: tableName,
-    KeyConditions: condition
-  }
-
-  dynamodb.query(queryParams, (err, data) => {
+  console.log(params);
+  dynamodb.batchGet(q, (err, data) => {
     if (err) {
       res.json({error: 'Could not load items: ' + err});
     } else {
-      res.json(data.Items);
+      //do some processiong for expiry date
+      res.json(data);
     }
   });
 });

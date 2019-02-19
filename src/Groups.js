@@ -10,9 +10,17 @@ class Groups extends Component {
     console.log(response);
   };
 
+  getMore = async () => {
+    const response = await API.post('3YP', '/groups/get', {
+      body: {
+        names: ['mafia', 'm2afia']
+      }
+    });
+    console.log(response);
+  };
   post = async () => {
     const response = await API.post('3YP', '/groups', {
-      body: { name: 'm2afia', endDate: '2019-03-20T00:00:00' }
+      body: { name: 'mafia', endDate: '2019-03-20T00:00:00' }
     });
     console.log(response);
   };
@@ -67,6 +75,7 @@ class Groups extends Component {
         <button onClick={this.deleteMemeber}>delMM</button>
         <button onClick={this.putGroupContacts}>Putgrp</button>
         <button onClick={this.deleteGroupContacts}>delgrp</button>
+        <button onClick={this.getMore}>getMore</button>
       </div>
     );
   }

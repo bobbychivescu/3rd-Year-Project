@@ -64,6 +64,11 @@ class App extends Component {
   render() {
     return (
       <Container fluid className="h-100">
+        <nav className="topbar">
+          <a className="navbar-brand" href="#">
+            3YP
+          </a>
+        </nav>
         <aside className="sidebar my-2">
           <Nav className="flex-md-column w-100 h-100 justify-content-around">
             <Item path="/" icon={home} />

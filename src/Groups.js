@@ -4,21 +4,17 @@ import { Container, Nav, NavItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Icon } from 'react-icons-kit';
 
-const Group = props => {
-  return (
-    <NavItem>
-      <Link to="#" className="group m-1 p-1">
-        <h5>grpup name</h5>
-        <p>some shortsdasda bio</p>
-      </Link>
-    </NavItem>
-  );
-};
+const Group = props => (
+  <NavItem>
+    <Link to={'/groups/' + props.g.name} className="group m-1 p-1">
+      <h5>{props.g.name}</h5>
+      {props.g.description ? <p>{props.g.description}</p> : <p>no desc</p>}
+    </Link>
+  </NavItem>
+);
 
 class Groups extends Component {
-  constructor(props) {
-    super(props);
-  }
+  state = {};
 
   get = async () => {
     const response = await API.get('3YP', '/groups/m2afia');
@@ -90,22 +86,35 @@ class Groups extends Component {
     console.log(response);
   };
 
+  async componentDidMount() {
+    if (this.props.user.groups) {
+      const response = await API.get('3YP', '/groups', {
+        queryStringParameters: {
+          names: this.props.user.groups.values
+        }
+      });
+      this.setState({ groups: response.Responses['3ypGroups'] });
+    } else {
+      //should setState with empty?
+      console.log('no groups');
+    }
+  }
+
   render() {
     return (
       <Container fluid className="no-padding-mobile">
         <aside className="groupnav my-2">
           <Nav className="flex-md-column w-100 h-100 no-wrap">
-            <Group />
-            <Group />
-            <Group />
-            <Group />
-            <Group />
-            <Group />
-            <Group />
-            <Group />
-            <Group />
-            <Group />
-            <Group />
+            <NavItem>
+              <Link to={'/groups/new'} className="group m-1 p-1">
+                <h5>Create new group</h5>
+              </Link>
+            </NavItem>
+            {this.state.groups ? (
+              this.state.groups.map(g => <Group g={g} />)
+            ) : (
+              <div />
+            )}
           </Nav>
         </aside>
       </Container>

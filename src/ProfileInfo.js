@@ -54,7 +54,7 @@ class ProfileInfo extends Component {
             <br />
             <InputGroup>
               <Input
-                placeholder={user.bio !== noBio ? user.bio : 'add bio...'}
+                placeholder={user.bio ? user.bio : 'add bio...'}
                 onChange={this.changeBio}
               />
             </InputGroup>
@@ -69,7 +69,7 @@ class ProfileInfo extends Component {
         ) : (
           <div>
             <h1>{user.nickname}</h1>
-            <h3>{user.bio}</h3>
+            {user.bio ? <h3>{user.bio}</h3> : <div />}
             <Button onClick={this.toggle} className="bg-orange">
               Edit info
             </Button>

@@ -53,11 +53,7 @@ class Profile extends Component {
             <hr className="hide-in-desktop" />
           </Col>
           <Col xs="12" md="auto">
-            {this.props.user.nickname ? (
-              <ProfileInfo user={this.props.user} />
-            ) : (
-              <Spinner color="warning" />
-            )}
+            <ProfileInfo user={this.props.user} />
           </Col>
         </Row>
         <hr />

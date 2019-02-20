@@ -9,7 +9,7 @@ import { home } from 'react-icons-kit/fa/home';
 import { userCircle } from 'react-icons-kit/fa/userCircle';
 import { group } from 'react-icons-kit/fa/group';
 import { ic_settings } from 'react-icons-kit/md/ic_settings';
-import { Nav, NavItem, Container } from 'reactstrap';
+import { Nav, NavItem, Container, Spinner } from 'reactstrap';
 
 import Home from './Home';
 import Profile from './Profile';
@@ -28,12 +28,7 @@ const Item = props => {
 };
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: {}
-    };
-  }
+  state = {};
 
   async componentDidMount() {
     const response = await API.get('3YP', '/profile');
@@ -49,6 +44,7 @@ class App extends Component {
       });
       console.log(response2);
       const response3 = await API.get('3YP', '/profile');
+      this.setState({ user: response3 });
       const text = 'Welcome to the app ' + response3.nickname;
       const response4 = await API.post('3YP', '/email', {
         body: {
@@ -57,7 +53,6 @@ class App extends Component {
           text: text
         }
       });
-      this.setState({ user: response3 });
     }
   }
 
@@ -78,33 +73,41 @@ class App extends Component {
           </Nav>
         </aside>
         <main className="content">
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => <Home {...this.props} user={this.state.user} />}
-            />
-            <Route
-              path="/profile"
-              render={() => <Profile {...this.props} user={this.state.user} />}
-            />
-            <Route
-              path="/settings"
-              render={() => <Settings {...this.props} user={this.state.user} />}
-            />
-            <Route
-              path="/groups"
-              render={() => <Groups {...this.props} user={this.state.user} />}
-            />
-            <Route
-              path="*"
-              component={() => (
-                <div>
-                  <h1>404 Not Found!</h1>
-                </div>
-              )}
-            />
-          </Switch>
+          {this.state.user ? (
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => <Home {...this.props} user={this.state.user} />}
+              />
+              <Route
+                path="/profile"
+                render={() => (
+                  <Profile {...this.props} user={this.state.user} />
+                )}
+              />
+              <Route
+                path="/settings"
+                render={() => (
+                  <Settings {...this.props} user={this.state.user} />
+                )}
+              />
+              <Route
+                path="/groups"
+                render={() => <Groups {...this.props} user={this.state.user} />}
+              />
+              <Route
+                path="*"
+                component={() => (
+                  <div>
+                    <h1>404 Not Found!</h1>
+                  </div>
+                )}
+              />
+            </Switch>
+          ) : (
+            <Spinner color="warning" className="m-5" />
+          )}
         </main>
       </Container>
     );

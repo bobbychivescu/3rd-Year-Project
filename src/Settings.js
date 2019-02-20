@@ -3,15 +3,12 @@ import { Button, Card, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { Auth, API } from 'aws-amplify';
 
 class Settings extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pass: '',
-      newPass: '',
-      TCModal: false,
-      PPModal: false
-    };
-  }
+  state = {
+    pass: '',
+    newPass: '',
+    TCModal: false,
+    PPModal: false
+  };
 
   changePass = e => {
     this.setState({

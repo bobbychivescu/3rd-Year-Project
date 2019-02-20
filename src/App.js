@@ -78,23 +78,19 @@ class App extends Component {
               <Route
                 exact
                 path="/"
-                render={() => <Home {...this.props} user={this.state.user} />}
+                render={() => <Home user={this.state.user} />}
               />
               <Route
                 path="/profile"
-                render={() => (
-                  <Profile {...this.props} user={this.state.user} />
-                )}
+                render={() => <Profile user={this.state.user} />}
               />
               <Route
                 path="/settings"
-                render={() => (
-                  <Settings {...this.props} user={this.state.user} />
-                )}
+                render={() => <Settings user={this.state.user} />}
               />
               <Route
                 path="/groups"
-                render={() => <Groups {...this.props} user={this.state.user} />}
+                render={props => <Groups {...props} user={this.state.user} />}
               />
               <Route
                 path="*"

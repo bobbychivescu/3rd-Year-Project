@@ -45,6 +45,7 @@ app.use(function(req, res, next) {
 
 app.get(path, function(req, res) {
   let params = {};
+  //consider trimming attributes, will load individually after anyway
   params[tableName] = {
     Keys: req.apiGateway.event.multiValueQueryStringParameters.names.map((item) => {
       return {

@@ -31,7 +31,10 @@ class Profile extends Component {
     const res = await Storage.put(imgPath, file, {
       contentType: file.type
     });
-    window.location.reload();
+    const url = await Storage.get(imgPath);
+    this.setState({
+      imgUrl: url
+    });
   };
 
   render() {

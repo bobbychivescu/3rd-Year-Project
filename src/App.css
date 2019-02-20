@@ -10,6 +10,14 @@ body {
   overflow: auto;
 }
 
+.groupnav {
+  width: 180px;
+  background-color: #e3eaa7;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
 .topbar {
   width: 100%;
   background-color: #e3eaa7;
@@ -17,7 +25,16 @@ body {
   height: 40px;
   top: 0;
   overflow: hidden;
-  z-index: 9999;
+  z-index: 1001;
+}
+.group {
+  background-color: #ff7b25;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  width: 100%;
+  border: 1px solid;
 }
 
 .content {
@@ -38,6 +55,17 @@ img {
     position: relative;
   }
 
+  .groupnav {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .no-padding-mobile {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
   .topbar {
     position: relative;
   }
@@ -49,12 +77,19 @@ img {
   .hide-in-mobile {
     display: none !important;
   }
+
+  .group {
+    width: 150px;
+  }
 }
 
 .settings {
   margin: 1rem;
 }
 
+.no-wrap {
+  flex-wrap: nowrap !important;
+}
 @media screen and (min-width: 768px) {
   .hide-in-desktop {
     display: none !important;

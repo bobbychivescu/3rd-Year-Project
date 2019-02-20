@@ -1,5 +1,20 @@
 import React, { Component } from 'react';
 import { API } from 'aws-amplify';
+import { Container, Nav, NavItem } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Icon } from 'react-icons-kit';
+
+const Group = props => {
+  return (
+    <NavItem>
+      <Link to="#" className="group m-1 p-1">
+        <h5>grpup name</h5>
+        <p>some shortsdasda bio</p>
+      </Link>
+    </NavItem>
+  );
+};
+
 class Groups extends Component {
   constructor(props) {
     super(props);
@@ -77,17 +92,23 @@ class Groups extends Component {
 
   render() {
     return (
-      <div>
-        <button onClick={this.get}>Get</button>
-        <button onClick={this.post}>Post</button>
-        <button onClick={this.delete}>Del</button>
-        <button onClick={this.put}>Put</button>
-        <button onClick={this.putMemeber}>PutMM</button>
-        <button onClick={this.deleteMemeber}>delMM</button>
-        <button onClick={this.putGroupContacts}>Putgrp</button>
-        <button onClick={this.deleteGroupContacts}>delgrp</button>
-        <button onClick={this.getMoreC}>getMore</button>
-      </div>
+      <Container fluid className="no-padding-mobile">
+        <aside className="groupnav my-2">
+          <Nav className="flex-md-column w-100 h-100 no-wrap">
+            <Group />
+            <Group />
+            <Group />
+            <Group />
+            <Group />
+            <Group />
+            <Group />
+            <Group />
+            <Group />
+            <Group />
+            <Group />
+          </Nav>
+        </aside>
+      </Container>
     );
   }
 }

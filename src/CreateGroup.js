@@ -42,7 +42,8 @@ class CreateGroup extends Component {
       var group = {
         name: this.state.name,
         endDate: this.state.date,
-        private: this.state.private
+        private: this.state.private,
+        members: [this.props.user.userId]
       };
       if (this.state.desc !== '') group['description'] = this.state.desc;
       const response = await API.post('3YP', '/groups', {

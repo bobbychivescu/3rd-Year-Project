@@ -13,7 +13,6 @@ let tableName = "3ypUsers";
 
 
 const partitionKeyName = "userId";
-const partitionKeyType = "S";
 const path = "/profile";
 var app = express()
 app.use(bodyParser.json())
@@ -26,24 +25,21 @@ app.use(function(req, res, next) {
   next()
 });
 
-//get more users (friends)
-//consider using no input from user
-
 app.get(path + '/contacts', function(req, res) {
-  let params = {};
+  const params = {};
   params[tableName] = {
     Keys: req.apiGateway.event.multiValueQueryStringParameters.ids.map((item) => {
       return {
         userId: item
       }
-    })
+    }),
+    ProjectionExpression: 'userId, bio, emailPublic, nickname, email'
   };
 
-  let q = {
+  const q = {
     RequestItems: params
   };
 
-  console.log(params);
   dynamodb.batchGet(q, (err, data) => {
     if (err) {
       res.json({error: 'Could not load items: ' + err});
@@ -58,13 +54,13 @@ app.get(path + '/contacts', function(req, res) {
  *****************************************/
 
 app.get(path, function(req, res) {
-  var params = {};
+  const params = {};
   params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
 
-  let getItemParams = {
+  const getItemParams = {
     TableName: tableName,
     Key: params
-  }
+  };
 
   dynamodb.get(getItemParams,(err, data) => {
     if(err) {
@@ -84,7 +80,9 @@ app.get(path, function(req, res) {
 
 app.put(path +'/:action', function(req, res) {
 
-  let putItemParams = {
+  //consider if this should ever be done by other user
+  //add extra userId parama to request
+  const putItemParams = {
     TableName: tableName,
     Key: {
       userId: req.apiGateway.event.requestContext.identity.cognitoIdentityId
@@ -92,8 +90,8 @@ app.put(path +'/:action', function(req, res) {
   }
 
   let expression = req.params['action'] + ' ';
-  let l = expression.length;
-  let values = {};
+  const l = expression.length;
+  const values = {};
 
   for (var property in req.body) {
     if (req.body.hasOwnProperty(property)) {
@@ -105,14 +103,10 @@ app.put(path +'/:action', function(req, res) {
     }
   }
 
-  //who can add new memebers?
-  //values[':createdBy'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
-
   putItemParams['UpdateExpression'] = expression;
   putItemParams['ExpressionAttributeValues'] = values;
-  //putItemParams['ConditionExpression'] = 'createdBy = :createdBy';
+  putItemParams['ReturnValues'] = 'UPDATED_NEW';
 
-  console.log(putItemParams);
 
   if(expression.length > l) {
     dynamodb.update(putItemParams, (err, data) => {
@@ -135,8 +129,7 @@ app.put(path +'/:action', function(req, res) {
  *************************************/
 
 app.put(path, function(req, res) {
-
-  let putItemParams = {
+  const putItemParams = {
     TableName: tableName,
     Key: {
       userId: req.apiGateway.event.requestContext.identity.cognitoIdentityId
@@ -144,13 +137,13 @@ app.put(path, function(req, res) {
   }
 
   let expression = 'set ';
-  let values = {};
+  const values = {};
 
-  for (var property in req.body) {
+  for (let property in req.body) {
     if (req.body.hasOwnProperty(property)) {
-      if(expression.length > 4) //something was added
+      if(expression.length > 4){ //something was added
         expression += ', ';
-
+      }
       expression += (property + ' = :' + property);
       values[':' + property] = req.body[property];
     }
@@ -158,8 +151,7 @@ app.put(path, function(req, res) {
 
   putItemParams['UpdateExpression'] = expression;
   putItemParams['ExpressionAttributeValues'] = values;
-
-  console.log(putItemParams);
+  putItemParams['ReturnValues'] = 'UPDATED_NEW';
 
   if(expression.length > 4) {
     dynamodb.update(putItemParams, (err, data) => {
@@ -172,8 +164,6 @@ app.put(path, function(req, res) {
   } else {
     res.json({status: 'nothing changed', url: req.url});
   }
-
-
 });
 
 
@@ -184,11 +174,10 @@ app.put(path, function(req, res) {
 app.post(path, function(req, res) {
   req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
   req.body['nickname'] = generateName();
-  req.body['bio'] = 'no bio added';
   req.body['emailNotifications'] = true;
   req.body['emailPublic'] = true;
 
-  let putItemParams = {
+  const putItemParams = {
     TableName: tableName,
     Item: req.body
   }
@@ -208,13 +197,13 @@ app.post(path, function(req, res) {
  ***************************************/
 
 app.delete(path, function(req, res) {
-  var params = {};
+  const params = {};
   params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
 
-  let removeItemParams = {
+  const removeItemParams = {
     TableName: tableName,
     Key: params
-  }
+  };
 
   dynamodb.delete(removeItemParams, (err, data)=> {
     if(err) {

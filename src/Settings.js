@@ -41,7 +41,8 @@ class Settings extends Component {
         emailNotifications: !this.props.user.emailNotifications
       }
     });
-    window.location.reload();
+    const user = { ...this.props.user, ...response.data.Attributes };
+    this.props.setAppState({ user: user });
   };
 
   toggleEmailAvailability = async () => {
@@ -50,7 +51,8 @@ class Settings extends Component {
         emailPublic: !this.props.user.emailPublic
       }
     });
-    window.location.reload();
+    const user = { ...this.props.user, ...response.data.Attributes };
+    this.props.setAppState({ user: user });
   };
 
   toggleTCModal = () => {

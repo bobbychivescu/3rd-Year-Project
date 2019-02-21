@@ -16,16 +16,9 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 let tableName = "3ypGroups";
 
-const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "name";
-const partitionKeyType = "S";
-const sortKeyName = "endDate";
-const sortKeyType = "S";
-const hasSortKey = sortKeyName !== "";
 const path = "/groups";
-const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
-const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
 // declare a new express app
 var app = express()
 app.use(bodyParser.json())
@@ -44,17 +37,19 @@ app.use(function(req, res, next) {
  ********************************/
 
 app.get(path, function(req, res) {
-  let params = {};
-  //consider trimming attributes, will load individually after anyway
+  const params = {};
   params[tableName] = {
     Keys: req.apiGateway.event.multiValueQueryStringParameters.names.map((item) => {
       return {
         name: item
       }
-    })
+    }), ExpressionAttributeNames: {
+      '#n': 'name'
+    },
+    ProjectionExpression:  '#n, endDate, description'
   };
 
-  let q = {
+  const q = {
     RequestItems: params
   };
 
@@ -63,8 +58,11 @@ app.get(path, function(req, res) {
     if (err) {
       res.json({error: 'Could not load items: ' + err});
     } else {
-      //do some processiong for expiry date
-      res.json(data);
+      const now = new Date();
+      res.json(data.Responses['3ypGroups'].filter((item) => {
+        const date = new Date(item.endDate);
+        return now<date;
+      }));
     }
   });
 });
@@ -74,24 +72,23 @@ app.get(path, function(req, res) {
  *****************************************/
 
 app.get(path + hashKeyPath, function(req, res) {
-  var params = {};
+  const params = {};
   params[partitionKeyName] = req.params[partitionKeyName];
 
   let getItemParams = {
     TableName: tableName,
     Key: params
-  }
+  };
 
-  console.log(params);
 
   dynamodb.get(getItemParams,(err, data) => {
     if(err) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
-      if (data.Item) {
+      if (data.Item ) {//&& data.Item.members.includes(req.apiGateway.event.requestContext.identity.cognitoIdentityId)) {
         res.json(data.Item);
       } else {
-        res.json(data) ;
+          res.json({error: 'Could not load item. It may not exist'});
       }
     }
   });
@@ -101,7 +98,7 @@ app.get(path + hashKeyPath, function(req, res) {
 
 app.put(path +'/:action' + hashKeyPath, function(req, res) {
 
-  let putItemParams = {
+  const putItemParams = {
     TableName: tableName,
     Key: {
       name: req.params[partitionKeyName]
@@ -109,10 +106,10 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
   }
 
   let expression = req.params['action'] + ' ';
-  let l = expression.length;
-  let values = {};
+  const l = expression.length;
+  const values = {};
 
-  for (var property in req.body) {
+  for (let property in req.body) {
     if (req.body.hasOwnProperty(property)) {
       if(expression.length > l) //something was added
         expression += ', ';
@@ -122,14 +119,12 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
     }
   }
 
-  //who can add new memebers?
-  //values[':createdBy'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
-
+  values[':member'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
+  values[':false'] = false;
   putItemParams['UpdateExpression'] = expression;
   putItemParams['ExpressionAttributeValues'] = values;
-  //putItemParams['ConditionExpression'] = 'createdBy = :createdBy';
-
-  console.log(putItemParams);
+  putItemParams['ConditionExpression'] = 'private = :false OR contains(members, :member)';
+  putItemParams['ReturnValues'] = 'UPDATED_NEW';
 
   if(expression.length > l) {
     dynamodb.update(putItemParams, (err, data) => {
@@ -153,7 +148,7 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
 
 app.put(path + hashKeyPath, function(req, res) {
 
-  let putItemParams = {
+  const putItemParams = {
     TableName: tableName,
     Key: {
       name: req.params[partitionKeyName]
@@ -161,9 +156,9 @@ app.put(path + hashKeyPath, function(req, res) {
   }
 
   let expression = 'set ';
-  let values = {};
+  const values = {};
 
-  for (var property in req.body) {
+  for (let property in req.body) {
     if (req.body.hasOwnProperty(property)) {
       if(expression.length > 4) //something was added
         expression += ', ';
@@ -177,8 +172,7 @@ app.put(path + hashKeyPath, function(req, res) {
   putItemParams['UpdateExpression'] = expression;
   putItemParams['ExpressionAttributeValues'] = values;
   putItemParams['ConditionExpression'] = 'createdBy = :createdBy';
-
-  console.log(putItemParams);
+  putItemParams['ReturnValues'] = 'UPDATED_NEW';
 
   if(expression.length > 4) {
     dynamodb.update(putItemParams, (err, data) => {
@@ -202,9 +196,9 @@ app.put(path + hashKeyPath, function(req, res) {
 app.post(path, function(req, res) {
 
   req.body['createdBy'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
-  req.body['members'] = dynamodb.createSet([req.apiGateway.event.requestContext.identity.cognitoIdentityId]);
+  req.body['members'] = dynamodb.createSet(req.body['members']);
 
-  let putItemParams = {
+  const putItemParams = {
     TableName: tableName,
     Item: req.body,
     ExpressionAttributeNames: {
@@ -227,13 +221,13 @@ app.post(path, function(req, res) {
  ***************************************/
 
 app.delete(path + hashKeyPath, function(req, res) {
-  var params = {};
+  const params = {};
   params[partitionKeyName] = req.params[partitionKeyName];
 
-  let values = {};
+  const values = {};
   values[':createdBy'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
 
-  let removeItemParams = {
+  const removeItemParams = {
     TableName: tableName,
     Key: params,
     ExpressionAttributeValues: values,
@@ -241,14 +235,14 @@ app.delete(path + hashKeyPath, function(req, res) {
 
   };
 
-        dynamodb.delete(removeItemParams, (err, data)=> {
-          if(err) {
-            res.json({error: err, url: req.url});
-          } else {
-            res.json({url: req.url, data: data});
-          }
-        });
+  dynamodb.delete(removeItemParams, (err, data)=> {
+    if(err) {
+      res.json({error: err, url: req.url});
+    } else {
+      res.json({url: req.url, data: data});
+    }
   });
+});
 
 app.listen(3000, function() {
   console.log("App started")

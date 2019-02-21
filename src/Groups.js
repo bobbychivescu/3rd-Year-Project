@@ -24,7 +24,8 @@ class Groups extends Component {
           names: this.props.user.groups.values
         }
       });
-      this.setState({ groups: response.Responses['3ypGroups'] });
+      console.log(response);
+      this.setState({ groups: response });
     } else {
       //should setState with empty?
       console.log('no groups');

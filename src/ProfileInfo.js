@@ -27,10 +27,14 @@ class ProfileInfo extends Component {
     if (this.state.nickname) toEdit['nickname'] = this.state.nickname;
     if (this.state.bio) toEdit['bio'] = this.state.bio;
 
-    const response = await API.put('3YP', '/profile', {
-      body: toEdit
-    });
-    window.location.reload();
+    if (this.state.nickname || this.state.bio) {
+      const response = await API.put('3YP', '/profile', {
+        body: toEdit
+      });
+      const user = { ...this.props.user, ...response.data.Attributes };
+      this.props.setAppState({ user: user });
+      this.toggle();
+    }
   };
 
   toggle = () => {

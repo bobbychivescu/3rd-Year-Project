@@ -56,6 +56,10 @@ class App extends Component {
     }
   }
 
+  setAppState = state => {
+    this.setState(state);
+  };
+
   render() {
     return (
       <Container fluid className="h-100">
@@ -82,11 +86,21 @@ class App extends Component {
               />
               <Route
                 path="/profile"
-                render={() => <Profile user={this.state.user} />}
+                render={() => (
+                  <Profile
+                    user={this.state.user}
+                    setAppState={this.setAppState}
+                  />
+                )}
               />
               <Route
                 path="/settings"
-                render={() => <Settings user={this.state.user} />}
+                render={() => (
+                  <Settings
+                    user={this.state.user}
+                    setAppState={this.setAppState}
+                  />
+                )}
               />
               <Route
                 path="/groups"

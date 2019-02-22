@@ -7,7 +7,14 @@ class Home extends Component {
   }
 
   get = async () => {
-    const response = await API.get('3YP', '/profile');
+    const response = await API.get('3YP', '/profile/contacts', {
+      queryStringParameters: {
+        ids: [
+          'eu-west-1:b8ca0ea7-bee5-455d-927f-91bcb1e9937a',
+          'eu-west-1:d8c090a8-3d22-411f-b4f0-3b77b9aa000e'
+        ]
+      }
+    });
     console.log(response);
   };
 

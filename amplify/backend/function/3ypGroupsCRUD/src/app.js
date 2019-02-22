@@ -59,7 +59,7 @@ app.get(path, function(req, res) {
       res.json({error: 'Could not load items: ' + err});
     } else {
       const now = new Date();
-      res.json(data.Responses['3ypGroups'].filter((item) => {
+      res.json(data.Responses[tableName].filter((item) => {
         const date = new Date(item.endDate);
         return now<date;
       }));
@@ -85,7 +85,7 @@ app.get(path + hashKeyPath, function(req, res) {
     if(err) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
-      if (data.Item ) {//&& data.Item.members.includes(req.apiGateway.event.requestContext.identity.cognitoIdentityId)) {
+      if (data.Item && data.Item.members.values.includes(req.apiGateway.event.requestContext.identity.cognitoIdentityId)) {
         res.json(data.Item);
       } else {
           res.json({error: 'Could not load item. It may not exist'});

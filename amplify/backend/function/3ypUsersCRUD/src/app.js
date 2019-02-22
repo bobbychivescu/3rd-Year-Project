@@ -44,7 +44,7 @@ app.get(path + '/contacts', function(req, res) {
     if (err) {
       res.json({error: 'Could not load items: ' + err});
     } else {
-      res.json(data);
+      res.json(data.Responses[tableName]);
     }
   });
 });

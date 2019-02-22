@@ -54,9 +54,7 @@ class Groups extends Component {
             <Route
               exact
               path="/groups"
-              render={props => (
-                <CreateGroup {...props} user={this.props.user} />
-              )}
+              render={props => <CreateGroup {...props} {...this.props} />}
             />
             <Route
               path="/groups/:name"

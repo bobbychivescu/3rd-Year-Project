@@ -38,7 +38,6 @@ class Profile extends Component {
   };
 
   render() {
-    const contacts = ['bob', 'mary', 'jane', 'jphn', 'matanumelungada'];
     return (
       <Container>
         <Row>
@@ -60,7 +59,7 @@ class Profile extends Component {
           </Col>
         </Row>
         <hr />
-        <Contacts contacts={contacts} />
+        <Contacts contacts={this.props.contacts} />
       </Container>
     );
   }

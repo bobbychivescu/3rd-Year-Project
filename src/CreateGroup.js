@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
-import { Container, Input, Button } from 'reactstrap';
+import {
+  Container,
+  Input,
+  Button,
+  Card,
+  Col,
+  CardSubtitle,
+  CardBody
+} from 'reactstrap';
 import { API } from 'aws-amplify';
 import DateTimePicker from 'react-datetime-picker';
 
 class CreateGroup extends Component {
   constructor(props) {
     super(props);
-    var tomorrow = new Date();
+    const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     this.state = {
       name: '',
       desc: '',
       private: false,
-      date: tomorrow
+      date: tomorrow,
+      members: [],
+      query: ''
     };
   }
 
@@ -39,11 +49,11 @@ class CreateGroup extends Component {
     if (this.state.name === '') {
       alert('Name cannot be empty!');
     } else {
-      var group = {
+      const group = {
         name: this.state.name,
         endDate: this.state.date,
         private: this.state.private,
-        members: [this.props.user.userId]
+        members: [...this.state.members, this.props.user.userId]
       };
       if (this.state.desc !== '') group['description'] = this.state.desc;
       const response = await API.post('3YP', '/groups', {
@@ -54,6 +64,20 @@ class CreateGroup extends Component {
       //redirect probs and hendle duplicate
     }
   };
+
+  changeQuery = e => {
+    this.setState({
+      query: e.target.value
+    });
+  };
+
+  addMember = id => {
+    const m = this.state.members;
+    m.push(id);
+    this.setState({ members: m });
+  };
+
+  toggleContacts = () => this.setState({ focused: true });
 
   render() {
     var maxDate = new Date();
@@ -104,6 +128,39 @@ class CreateGroup extends Component {
           PRIVATE
         </label>
         <hr />
+        <h4>Add members</h4>
+        <Input
+          className="half-on-desktop my-1"
+          placeholder="search by username, email..."
+          onChange={this.changeQuery}
+          onFocus={this.toggleContacts}
+        />
+        {this.state.focused &&
+          this.props.contacts
+            .filter(contact => {
+              return (
+                !this.state.members.includes(contact.userId) &&
+                (contact.nickname.includes(this.state.query) ||
+                  (contact.emailPublic &&
+                    contact.email.includes(this.state.query)))
+              );
+            })
+            .map(item => (
+              <Card className="my-2 bej">
+                <CardBody>
+                  <h3>{item.nickname}</h3>
+                  {item.emailPublic && (
+                    <CardSubtitle>{item.email}</CardSubtitle>
+                  )}
+                  <Button
+                    onClick={() => this.addMember(item.userId)}
+                    className="bg-orange"
+                  >
+                    Add
+                  </Button>
+                </CardBody>
+              </Card>
+            ))}
         <Button onClick={this.create} className="bg-orange">
           Create group
         </Button>

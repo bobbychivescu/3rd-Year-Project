@@ -34,6 +34,14 @@ class App extends Component {
     const response = await API.get('3YP', '/profile');
     if (response.hasOwnProperty('nickname')) {
       this.setState({ user: response });
+      if (response.contacts) {
+        const resp5 = await API.get('3YP', '/profile/contacts', {
+          queryStringParameters: {
+            ids: response.contacts.values
+          }
+        });
+        this.setState({ contacts: resp5 });
+      }
     } else {
       // first login
       const user = await Auth.currentAuthenticatedUser();
@@ -89,6 +97,7 @@ class App extends Component {
                 render={() => (
                   <Profile
                     user={this.state.user}
+                    contacts={this.state.contacts}
                     setAppState={this.setAppState}
                   />
                 )}
@@ -104,7 +113,13 @@ class App extends Component {
               />
               <Route
                 path="/groups"
-                render={props => <Groups {...props} user={this.state.user} />}
+                render={props => (
+                  <Groups
+                    {...props}
+                    user={this.state.user}
+                    contacts={this.state.contacts}
+                  />
+                )}
               />
               <Route
                 path="*"

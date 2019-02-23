@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Col, Row, Spinner } from 'reactstrap';
 import ProfileInfo from './ProfileInfo';
 import Contacts from './Contacts';
-import { Storage } from 'aws-amplify';
+import { API, Storage } from 'aws-amplify';
 
 var imageExists = require('image-exists');
 
@@ -17,6 +17,14 @@ class Profile extends Component {
   }
 
   async componentDidMount() {
+    // if(!this.props.contacts)
+    //   this.props.setAppState({
+    //     contacts: await API.get('3YP', '/profile/contacts', {
+    //       queryStringParameters: {
+    //         ids: this.props.user.contacts.values
+    //       }
+    //     })
+    //   });
     const url = await Storage.get(imgPath);
     imageExists(url, result => {
       if (result)

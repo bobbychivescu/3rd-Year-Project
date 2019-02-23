@@ -17,20 +17,20 @@ const Group = props => (
 class Groups extends Component {
   state = {};
 
-  async componentDidMount() {
-    if (this.props.user.groups) {
-      const response = await API.get('3YP', '/groups', {
-        queryStringParameters: {
-          names: this.props.user.groups.values
-        }
-      });
-      console.log(response);
-      this.setState({ groups: response });
-    } else {
-      //should setState with empty?
-      console.log('no groups');
-    }
-  }
+  // async componentDidMount() {
+  //   if (this.props.user.groups) {
+  //     const response = await API.get('3YP', '/groups', {
+  //       queryStringParameters: {
+  //         names: this.props.user.groups.values
+  //       }
+  //     });
+  //     console.log(response);
+  //     this.setState({ groups: response });
+  //   } else {
+  //     //should setState with empty?
+  //     console.log('no groups');
+  //   }
+  // }
 
   render() {
     return (
@@ -42,8 +42,8 @@ class Groups extends Component {
                 <h5>Create new group</h5>
               </Link>
             </NavItem>
-            {this.state.groups ? (
-              this.state.groups.map(g => <Group g={g} />)
+            {this.props.groups ? (
+              this.props.groups.map(g => <Group g={g} />)
             ) : (
               <div />
             )}

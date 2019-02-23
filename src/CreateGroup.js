@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
-import {
-  Container,
-  Input,
-  Button,
-  Card,
-  Col,
-  CardSubtitle,
-  CardBody
-} from 'reactstrap';
+import { Container, Input, Button } from 'reactstrap';
 import { API } from 'aws-amplify';
 import DateTimePicker from 'react-datetime-picker';
+import AddContacts from './AddContacts';
 
 class CreateGroup extends Component {
   constructor(props) {
@@ -21,29 +14,19 @@ class CreateGroup extends Component {
       desc: '',
       private: false,
       date: tomorrow,
-      members: [],
-      query: ''
+      members: []
     };
   }
 
-  changeName = e => {
-    this.setState({
-      name: e.target.value
-    });
-  };
+  changeName = e => this.setState({ name: e.target.value });
 
-  changeDesc = e => {
-    this.setState({
-      desc: e.target.value
-    });
-  };
+  changeDesc = e => this.setState({ desc: e.target.value });
 
-  changeDate = date => {
-    this.setState({ date });
-    console.log(this.state.date);
-  };
+  changeDate = date => this.setState({ date });
 
   togglePrivate = () => this.setState({ private: !this.state.private });
+
+  addMember = id => this.setState({ members: [...this.state.members, id] });
 
   create = async () => {
     if (this.state.name === '') {
@@ -64,20 +47,6 @@ class CreateGroup extends Component {
       //redirect probs and hendle duplicate
     }
   };
-
-  changeQuery = e => {
-    this.setState({
-      query: e.target.value
-    });
-  };
-
-  addMember = id => {
-    const m = this.state.members;
-    m.push(id);
-    this.setState({ members: m });
-  };
-
-  toggleContacts = () => this.setState({ focused: true });
 
   render() {
     var maxDate = new Date();
@@ -129,38 +98,11 @@ class CreateGroup extends Component {
         </label>
         <hr />
         <h4>Add members</h4>
-        <Input
-          className="half-on-desktop my-1"
-          placeholder="search by username, email..."
-          onChange={this.changeQuery}
-          onFocus={this.toggleContacts}
+        <AddContacts
+          contacts={this.props.contacts}
+          add={this.addMember}
+          members={this.state.members}
         />
-        {this.state.focused &&
-          this.props.contacts
-            .filter(contact => {
-              return (
-                !this.state.members.includes(contact.userId) &&
-                (contact.nickname.includes(this.state.query) ||
-                  (contact.emailPublic &&
-                    contact.email.includes(this.state.query)))
-              );
-            })
-            .map(item => (
-              <Card className="my-2 bej">
-                <CardBody>
-                  <h3>{item.nickname}</h3>
-                  {item.emailPublic && (
-                    <CardSubtitle>{item.email}</CardSubtitle>
-                  )}
-                  <Button
-                    onClick={() => this.addMember(item.userId)}
-                    className="bg-orange"
-                  >
-                    Add
-                  </Button>
-                </CardBody>
-              </Card>
-            ))}
         <Button onClick={this.create} className="bg-orange">
           Create group
         </Button>

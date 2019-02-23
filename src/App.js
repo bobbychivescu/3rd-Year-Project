@@ -11,6 +11,7 @@ import { group } from 'react-icons-kit/fa/group';
 import { ic_settings } from 'react-icons-kit/md/ic_settings';
 import { Nav, NavItem, Container, Spinner } from 'reactstrap';
 
+import { getUser, getContacts, getGroups } from './apiWrapper';
 import Home from './Home';
 import Profile from './Profile';
 import Settings from './Settings';
@@ -31,36 +32,22 @@ class App extends Component {
   state = {};
 
   async componentDidMount() {
-    const response = await API.get('3YP', '/profile');
-    if (response.hasOwnProperty('nickname')) {
-      this.setState({ user: response });
-      if (response.contacts) {
-        const resp5 = await API.get('3YP', '/profile/contacts', {
-          queryStringParameters: {
-            ids: response.contacts.values
-          }
-        });
-        this.setState({ contacts: resp5 });
-      }
+    this.setState({ user: await getUser() });
+  }
+
+  async componentDidUpdate() {
+    if (!this.state.contacts && this.state.user.contacts) {
+      //called after user was set
+      this.setState({
+        contacts: await getContacts(this.state.user.contacts.values)
+      });
+    } else if (!this.state.groups && this.state.user.groups) {
+      //called after contacts were set
+      this.setState({ groups: await getGroups(this.state.user.groups.values) });
     } else {
-      // first login
-      const user = await Auth.currentAuthenticatedUser();
-      const response2 = await API.post('3YP', '/profile', {
-        body: {
-          email: user.attributes.email
-        }
-      });
-      console.log(response2);
-      const response3 = await API.get('3YP', '/profile');
-      this.setState({ user: response3 });
-      const text = 'Welcome to the app ' + response3.nickname;
-      const response4 = await API.post('3YP', '/email', {
-        body: {
-          to: user.attributes.email,
-          subject: 'Welcome',
-          text: text
-        }
-      });
+      //called after groups were set
+      console.log('handle stale data');
+      console.log(this.state);
     }
   }
 
@@ -90,7 +77,7 @@ class App extends Component {
               <Route
                 exact
                 path="/"
-                render={() => <Home user={this.state.user} />}
+                render={() => <Home user={this.state.user} />} //will probs need more params
               />
               <Route
                 path="/profile"
@@ -116,6 +103,7 @@ class App extends Component {
                 render={props => (
                   <Groups
                     {...props}
+                    groups={this.state.groups}
                     user={this.state.user}
                     contacts={this.state.contacts}
                   />

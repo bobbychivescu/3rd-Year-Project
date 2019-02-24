@@ -35,7 +35,7 @@ class Groups extends Component {
   render() {
     return (
       <Container fluid className="no-padding-mobile">
-        <aside className="groupnav my-2">
+        <aside className="groupnav">
           <Nav className="flex-md-column w-100 h-100 no-wrap">
             <NavItem>
               <Link to={'/groups'} className="group m-1 p-1">

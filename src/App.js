@@ -57,72 +57,74 @@ class App extends Component {
 
   render() {
     return (
-      <Container fluid className="h-100">
+      <div>
         <nav className="topbar">
           <a className="navbar-brand" href="#">
             3YP
           </a>
         </nav>
-        <aside className="sidebar">
-          <Nav className="flex-md-column w-100 h-100 justify-content-around bej">
-            <Item path="/" icon={home} />
-            <Item path="/profile" icon={userCircle} />
-            <Item path="/groups" icon={group} />
-            <Item path="/settings" icon={ic_settings} />
-          </Nav>
-        </aside>
-        <main className="content">
-          {this.state.user ? (
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => <Home user={this.state.user} />} //will probs need more params
-              />
-              <Route
-                path="/profile"
-                render={() => (
-                  <Profile
-                    user={this.state.user}
-                    contacts={this.state.contacts}
-                    setAppState={this.setAppState}
-                  />
-                )}
-              />
-              <Route
-                path="/settings"
-                render={() => (
-                  <Settings
-                    user={this.state.user}
-                    setAppState={this.setAppState}
-                  />
-                )}
-              />
-              <Route
-                path="/groups"
-                render={props => (
-                  <Groups
-                    {...props}
-                    groups={this.state.groups}
-                    user={this.state.user}
-                    contacts={this.state.contacts}
-                  />
-                )}
-              />
-              <Route
-                path="*"
-                component={() => (
-                  <div>
-                    <h1>404 Not Found!</h1>
-                  </div>
-                )}
-              />
-            </Switch>
-          ) : (
-            <Spinner color="warning" className="m-5" />
-          )}
-        </main>
-      </Container>
+        <Container fluid className="under-topbar my-2">
+          <aside className="sidebar">
+            <Nav className="flex-md-column w-100 h-100 justify-content-around bej">
+              <Item path="/" icon={home} />
+              <Item path="/profile" icon={userCircle} />
+              <Item path="/groups" icon={group} />
+              <Item path="/settings" icon={ic_settings} />
+            </Nav>
+          </aside>
+          <main className="content">
+            {this.state.user ? (
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Home user={this.state.user} />} //will probs need more params
+                />
+                <Route
+                  path="/profile"
+                  render={() => (
+                    <Profile
+                      user={this.state.user}
+                      contacts={this.state.contacts}
+                      setAppState={this.setAppState}
+                    />
+                  )}
+                />
+                <Route
+                  path="/settings"
+                  render={() => (
+                    <Settings
+                      user={this.state.user}
+                      setAppState={this.setAppState}
+                    />
+                  )}
+                />
+                <Route
+                  path="/groups"
+                  render={props => (
+                    <Groups
+                      {...props}
+                      groups={this.state.groups}
+                      user={this.state.user}
+                      contacts={this.state.contacts}
+                    />
+                  )}
+                />
+                <Route
+                  path="*"
+                  component={() => (
+                    <div>
+                      <h1>404 Not Found!</h1>
+                    </div>
+                  )}
+                />
+              </Switch>
+            ) : (
+              <Spinner color="warning" className="m-5" />
+            )}
+          </main>
+        </Container>
+      </div>
     );
   }
 }

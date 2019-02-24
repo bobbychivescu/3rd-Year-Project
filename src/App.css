@@ -4,16 +4,8 @@ body {
 
 .sidebar {
   width: 130px;
-  background-color: #e3eaa7;
   position: fixed;
-  height: 100%;
-  overflow: auto;
-}
-
-.groupnav {
-  width: 180px;
-  background-color: #e3eaa7;
-  position: fixed;
+  padding-top: 40px;
   height: 100%;
   overflow: auto;
 }
@@ -27,6 +19,12 @@ body {
   overflow: hidden;
   z-index: 1001;
 }
+
+.content {
+  margin-left: 130px;
+  padding-top: 40px;
+}
+
 .group {
   background-color: #ff7b25;
   color: white;
@@ -36,11 +34,12 @@ body {
   width: 100%;
   border: 1px solid;
 }
-
-.content {
-  margin-left: 130px;
-  margin-top: 40px;
+.groupnav {
+  width: 180px;
+  background-color: #e3eaa7;
+  position: fixed;
   height: 100%;
+  overflow: auto;
 }
 
 .groups-content {
@@ -56,6 +55,7 @@ img {
 @media screen and (max-width: 768px) {
   .sidebar {
     width: 100%;
+    padding-top: 0;
     height: auto;
     position: relative;
   }
@@ -76,7 +76,7 @@ img {
   }
   .content {
     margin-left: 0;
-    margin-top: 0;
+    padding-top: 0;
   }
 
   .groups-content {

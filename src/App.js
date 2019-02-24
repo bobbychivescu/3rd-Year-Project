@@ -63,8 +63,8 @@ class App extends Component {
             3YP
           </a>
         </nav>
-        <aside className="sidebar my-2">
-          <Nav className="flex-md-column w-100 h-100 justify-content-around">
+        <aside className="sidebar">
+          <Nav className="flex-md-column w-100 h-100 justify-content-around bej">
             <Item path="/" icon={home} />
             <Item path="/profile" icon={userCircle} />
             <Item path="/groups" icon={group} />

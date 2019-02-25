@@ -7,9 +7,7 @@ import { ic_settings } from 'react-icons-kit/md/ic_settings';
 import EditGroup from './EditGroup';
 
 class SingleGroup extends Component {
-  state = {
-    settings: false
-  };
+  state = {};
 
   async componentDidUpdate() {
     if (
@@ -38,11 +36,15 @@ class SingleGroup extends Component {
   render() {
     return (
       <Container>
-        <div>{this.props.match.params.name}</div>
-        <div>{this.props.user.nickname}</div>
-        <Button onClick={this.toggleSettings} className="bg-orange">
-          <Icon size="24" icon={ic_settings} />
-        </Button>
+        <div className="m-2">
+          <h2 className="d-inline-block">{this.props.match.params.name}</h2>
+          <Button
+            onClick={this.toggleSettings}
+            className="bg-orange float-right"
+          >
+            <Icon size="24" icon={ic_settings} />
+          </Button>
+        </div>
         {this.state.group && (
           <div>
             {this.state.settings ? (

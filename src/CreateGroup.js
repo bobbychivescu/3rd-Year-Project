@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Input, Button } from 'reactstrap';
 import { API } from 'aws-amplify';
 import DateTimePicker from 'react-datetime-picker';
-import AddContacts from './AddContacts';
+import SelectMembers from './SelectMembers';
 
 class CreateGroup extends Component {
   constructor(props) {
@@ -96,7 +96,7 @@ class CreateGroup extends Component {
         </label>
         <hr />
         <h4>Add members</h4>
-        <AddContacts
+        <SelectMembers
           contacts={this.props.contacts}
           add={this.addMember}
           members={this.state.members}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Container, Input } from 'reactstrap';
 import DateTimePicker from 'react-datetime-picker';
-import AddContacts from './AddContacts';
+import SelectMembers from './SelectMembers';
 import { API } from 'aws-amplify';
 
 class EditGroup extends Component {
@@ -11,6 +11,7 @@ class EditGroup extends Component {
     this.state = {
       private: this.props.group.private,
       members: [],
+      membersToRemove: [],
       date: d
     };
     console.log(props);
@@ -23,8 +24,22 @@ class EditGroup extends Component {
   togglePrivate = () => this.setState({ private: !this.state.private });
 
   addMember = id => this.setState({ members: [...this.state.members, id] });
+  removeMember = id =>
+    this.setState({ membersToRemove: [...this.state.membersToRemove, id] });
 
   save = async () => {
+    let updatedGroup = {};
+    if (this.state.membersToRemove.length) {
+      const response = await API.put(
+        '3YP',
+        '/groups/delete/' + this.props.group.name,
+        {
+          body: { members: this.state.membersToRemove }
+        }
+      );
+      updatedGroup['members'] = response.data.Attributes.members;
+    }
+
     const group = {};
     if (this.state.desc) {
       group['description'] = this.state.desc;
@@ -38,7 +53,6 @@ class EditGroup extends Component {
       group['endDate'] = this.state.date;
     }
 
-    let updatedGroup = {};
     if (Object.keys(group).length !== 0) {
       const response = await API.put(
         '3YP',
@@ -47,7 +61,7 @@ class EditGroup extends Component {
           body: group
         }
       );
-      updatedGroup = { ...response.data.Attributes };
+      updatedGroup = { ...updatedGroup, ...response.data.Attributes };
     }
 
     //add memebers directly
@@ -75,6 +89,16 @@ class EditGroup extends Component {
         <hr />
         {this.props.user.userId === this.props.group.createdBy && (
           <div>
+            <h4>Remove members</h4>
+            <SelectMembers
+              contacts={this.props.contacts.filter(contact => {
+                return this.props.group.members.values.includes(contact.userId);
+              })}
+              select={this.removeMember}
+              buttonText="Remove"
+              members={this.state.membersToRemove}
+            />
+            <hr />
             <h4>Description</h4>
             <Input
               placeholder={
@@ -101,7 +125,7 @@ class EditGroup extends Component {
             <h4>Private</h4>
             <p>
               Only members of the group can add other members from their contact
-              list to a private group. The default is public.
+              list to a private group.
             </p>
             <label>
               <input
@@ -116,9 +140,10 @@ class EditGroup extends Component {
           </div>
         )}
         <h4>Add members</h4>
-        <AddContacts
+        <SelectMembers
           contacts={this.props.contacts}
-          add={this.addMember}
+          select={this.addMember}
+          buttonText="Add"
           members={[...this.props.group.members.values, ...this.state.members]}
         />
         <Button onClick={this.save} className="bg-orange">

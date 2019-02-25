@@ -8,7 +8,7 @@ import {
   Input
 } from 'reactstrap';
 
-class AddContacts extends Component {
+class SelectMembers extends Component {
   state = {
     query: '',
     focused: false
@@ -45,10 +45,10 @@ class AddContacts extends Component {
                     <CardSubtitle>{item.email}</CardSubtitle>
                   )}
                   <Button
-                    onClick={() => this.props.add(item.userId)}
+                    onClick={() => this.props.select(item.userId)}
                     className="bg-orange"
                   >
-                    Add
+                    {this.props.buttonText}
                   </Button>
                 </CardBody>
               </Card>
@@ -58,4 +58,4 @@ class AddContacts extends Component {
   }
 }
 
-export default AddContacts;
+export default SelectMembers;

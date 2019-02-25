@@ -85,6 +85,8 @@ app.get(path + hashKeyPath, function(req, res) {
     if(err) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
+      console.log(data);
+      console.log(req.apiGateway.event.requestContext.identity.cognitoIdentityId);
       if (data.Item && data.Item.members.values.includes(req.apiGateway.event.requestContext.identity.cognitoIdentityId)) {
         res.json(data.Item);
       } else {

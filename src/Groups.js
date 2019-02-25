@@ -58,9 +58,7 @@ class Groups extends Component {
             />
             <Route
               path="/groups/:name"
-              render={props => (
-                <SingleGroup {...props} user={this.props.user} />
-              )}
+              render={props => <SingleGroup {...props} {...this.props} />}
             />
           </Switch>
         </main>

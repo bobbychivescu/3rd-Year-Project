@@ -101,9 +101,8 @@ class App extends Component {
                 />
                 <Route
                   path="/groups"
-                  render={props => (
+                  render={() => (
                     <Groups
-                      {...props}
                       groups={this.state.groups}
                       user={this.state.user}
                       contacts={this.state.contacts}

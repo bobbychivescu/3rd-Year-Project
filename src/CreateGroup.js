@@ -10,8 +10,6 @@ class CreateGroup extends Component {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     this.state = {
-      name: '',
-      desc: '',
       private: false,
       date: tomorrow,
       members: []
@@ -29,7 +27,7 @@ class CreateGroup extends Component {
   addMember = id => this.setState({ members: [...this.state.members, id] });
 
   create = async () => {
-    if (this.state.name === '') {
+    if (!this.state.name) {
       alert('Name cannot be empty!');
     } else {
       const group = {
@@ -38,7 +36,7 @@ class CreateGroup extends Component {
         private: this.state.private,
         members: [...this.state.members, this.props.user.userId]
       };
-      if (this.state.desc !== '') group['description'] = this.state.desc;
+      if (this.state.desc) group['description'] = this.state.desc;
       const response = await API.post('3YP', '/groups', {
         body: group
       });

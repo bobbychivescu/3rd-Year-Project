@@ -25,6 +25,10 @@ class SingleGroup extends Component {
     }
   }
 
+  setAppState = state => {
+    this.setState(state);
+  };
+
   toggleSettings = () => {
     this.setState(prevState => ({
       settings: !prevState.settings
@@ -42,7 +46,11 @@ class SingleGroup extends Component {
         {this.state.group && (
           <div>
             {this.state.settings ? (
-              <EditGroup {...this.props} group={this.state.group} />
+              <EditGroup
+                {...this.props}
+                group={this.state.group}
+                set={this.setAppState}
+              />
             ) : (
               <div>rest of posts</div>
             )}

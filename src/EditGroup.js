@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Container, Input } from 'reactstrap';
 import DateTimePicker from 'react-datetime-picker';
 import AddContacts from './AddContacts';
+import { API } from 'aws-amplify';
 
 class EditGroup extends Component {
   constructor(props) {
@@ -25,18 +26,44 @@ class EditGroup extends Component {
 
   save = async () => {
     const group = {};
-    if (this.state.desc) group['description'] = this.state.desc;
-    if (this.state.private !== this.props.group.private)
+    if (this.state.desc) {
+      group['description'] = this.state.desc;
+    }
+    if (this.state.private !== this.props.group.private) {
       group['private'] = this.state.private;
+    }
     if (
       this.state.date.getTime() !== new Date(this.props.group.endDate).getTime()
-    )
+    ) {
       group['endDate'] = this.state.date;
+    }
+
+    let updatedGroup = {};
+    if (Object.keys(group).length !== 0) {
+      const response = await API.put(
+        '3YP',
+        '/groups/' + this.props.group.name,
+        {
+          body: group
+        }
+      );
+      updatedGroup = { ...response.data.Attributes };
+    }
 
     //add memebers directly
-    if (this.state.members.length) group['members'] = this.state.members;
+    if (this.state.members.length) {
+      const response = await API.put(
+        '3YP',
+        '/groups/add/' + this.props.group.name,
+        {
+          body: { members: this.state.members }
+        }
+      );
+      updatedGroup['members'] = response.data.Attributes.members;
+    }
 
-    console.log(group);
+    updatedGroup = { ...this.props.group, ...updatedGroup };
+    this.props.set({ group: updatedGroup, settings: false });
   };
 
   render() {
@@ -50,7 +77,11 @@ class EditGroup extends Component {
           <div>
             <h4>Description</h4>
             <Input
-              placeholder="optional"
+              placeholder={
+                this.props.group.description
+                  ? this.props.group.description
+                  : 'optional'
+              }
               onChange={this.changeDesc}
               className="half-on-desktop my-1"
             />

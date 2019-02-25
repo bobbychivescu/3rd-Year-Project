@@ -125,9 +125,14 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
   values[':false'] = false;
   putItemParams['UpdateExpression'] = expression;
   putItemParams['ExpressionAttributeValues'] = values;
-  putItemParams['ConditionExpression'] = 'private = :false OR contains(members, :member)';
+  putItemParams['ExpressionAttributeNames'] = {
+    '#p': 'private',
+    '#m': 'members'
+  }
+  putItemParams['ConditionExpression'] = '#p = :false OR contains(#m, :member)';
   putItemParams['ReturnValues'] = 'UPDATED_NEW';
 
+  console.log(putItemParams)
   if(expression.length > l) {
     dynamodb.update(putItemParams, (err, data) => {
       if(err) {
@@ -159,23 +164,27 @@ app.put(path + hashKeyPath, function(req, res) {
 
   let expression = 'set ';
   const values = {};
+  const names = {};
 
   for (let property in req.body) {
     if (req.body.hasOwnProperty(property)) {
       if(expression.length > 4) //something was added
         expression += ', ';
 
-      expression += (property + ' = :' + property);
+      expression += ('#' + property + ' = :' + property);
+      names['#' + property] = property;
       values[':' + property] = req.body[property];
     }
   }
   values[':createdBy'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
 
   putItemParams['UpdateExpression'] = expression;
+  putItemParams['ExpressionAttributeNames'] = names;
   putItemParams['ExpressionAttributeValues'] = values;
   putItemParams['ConditionExpression'] = 'createdBy = :createdBy';
   putItemParams['ReturnValues'] = 'UPDATED_NEW';
 
+  console.log(putItemParams)
   if(expression.length > 4) {
     dynamodb.update(putItemParams, (err, data) => {
       if(err) {

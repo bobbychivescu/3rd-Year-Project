@@ -15,13 +15,10 @@ import {
 } from 'reactstrap';
 
 class Contacts extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modal: false,
-      query: ''
-    };
-  }
+  state = {
+    modal: false,
+    query: ''
+  };
 
   toggle = () => {
     this.setState(prevState => ({
@@ -36,6 +33,11 @@ class Contacts extends Component {
   };
 
   render() {
+    if (this.props.contacts) {
+      console.log(this.props.contacts[0]);
+      //no fkn sense
+      console.log(this.props.contacts[0].img);
+    }
     return (
       <div className="text-center">
         <h2>Contacts</h2>
@@ -57,7 +59,9 @@ class Contacts extends Component {
               .map(item => (
                 <Col md="3">
                   <Card className="my-2 bej">
-                    <CardImg top src="/user.png" className="hide-in-mobile" />
+                    {item.img && (
+                      <CardImg top src={item.img} className="hide-in-mobile" />
+                    )}
                     <CardBody>
                       <h3>{item.nickname}</h3>
                       <CardSubtitle>
@@ -88,7 +92,7 @@ class Contacts extends Component {
                           )}
                         </h5>
                         <p>{item.bio}</p>
-                        <img src="/user.png" />
+                        <img src={item.img} />
                       </ModalBody>
                     </Modal>
                   </Card>

@@ -6,8 +6,6 @@ import { API, Storage } from 'aws-amplify';
 
 var imageExists = require('image-exists');
 
-const imgPath = 'photos/profile.png';
-
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -16,16 +14,10 @@ class Profile extends Component {
     };
   }
 
+  getPath = id => 'users/' + id + '.png';
+
   async componentDidMount() {
-    // if(!this.props.contacts)
-    //   this.props.setAppState({
-    //     contacts: await API.get('3YP', '/profile/contacts', {
-    //       queryStringParameters: {
-    //         ids: this.props.user.contacts.values
-    //       }
-    //     })
-    //   });
-    const url = await Storage.get(imgPath);
+    const url = await Storage.get(this.getPath(this.props.user.userId));
     imageExists(url, result => {
       if (result)
         this.setState({
@@ -34,12 +26,32 @@ class Profile extends Component {
     });
   }
 
+  async componentDidUpdate() {
+    if (!this.state.contactsWithPhoto) {
+      const contacts = this.props.contacts.map(async contact => {
+        const url = await Storage.get(this.getPath(contact.userId));
+        imageExists(url, result => {
+          if (result) {
+            contact.img = url;
+          } else {
+            contact.img = '/user.png';
+          }
+        });
+        return contact;
+      });
+      Promise.all(contacts).then(loaded => {
+        console.log(loaded);
+        this.setState({ contactsWithPhoto: loaded });
+      });
+    }
+  }
+
   onChange = async e => {
     const file = e.target.files[0];
-    const res = await Storage.put(imgPath, file, {
+    const res = await Storage.put(this.getPath(this.props.user.userId), file, {
       contentType: file.type
     });
-    const url = await Storage.get(imgPath);
+    const url = await Storage.get(this.getPath(this.props.user.userId));
     this.setState({
       imgUrl: url
     });
@@ -67,7 +79,7 @@ class Profile extends Component {
           </Col>
         </Row>
         <hr />
-        <Contacts contacts={this.props.contacts} />
+        <Contacts contacts={this.state.contactsWithPhoto} />
       </Container>
     );
   }

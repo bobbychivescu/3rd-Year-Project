@@ -5,9 +5,15 @@ import { Icon } from 'react-icons-kit';
 import { ic_settings } from 'react-icons-kit/md/ic_settings';
 
 import EditGroup from './EditGroup';
-
+import GroupContent from './GroupContent';
 class SingleGroup extends Component {
   state = {};
+
+  async componentDidMount() {
+    this.setState({
+      group: await API.get('3YP', '/groups/' + this.props.match.params.name)
+    });
+  }
 
   async componentDidUpdate() {
     if (
@@ -19,7 +25,6 @@ class SingleGroup extends Component {
         '/groups/' + this.props.match.params.name
       );
       this.setState({ group: response, settings: false });
-      console.log(response);
     }
   }
 
@@ -54,7 +59,7 @@ class SingleGroup extends Component {
                 set={this.setAppState}
               />
             ) : (
-              <div>rest of posts</div>
+              <GroupContent group={this.state.group} />
             )}
           </div>
         )}

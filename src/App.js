@@ -12,10 +12,10 @@ import { ic_settings } from 'react-icons-kit/md/ic_settings';
 import { Nav, NavItem, Container, Spinner } from 'reactstrap';
 
 import { getUser, getContacts, getGroups } from './apiWrapper';
-import Home from './Home';
-import Profile from './Profile';
-import Settings from './Settings';
-import Groups from './Groups';
+import Home from './components/Home';
+import Profile from './components/Profile';
+import Settings from './components/Settings';
+import Groups from './components/Groups';
 Amplify.configure(aws_exports);
 
 const Item = props => {

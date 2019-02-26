@@ -33,10 +33,11 @@ class Contacts extends Component {
   };
 
   render() {
+    console.log(new Date().getMilliseconds());
     if (this.props.contacts) {
-      console.log(this.props.contacts[0]);
+      console.log(JSON.stringify(this.props.contacts[0]));
       //no fkn sense
-      console.log(this.props.contacts[0].img);
+      //console.log(this.props.contacts[0].img);
     }
     return (
       <div className="text-center">

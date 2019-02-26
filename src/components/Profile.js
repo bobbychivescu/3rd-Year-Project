@@ -10,13 +10,15 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imgUrl: '/user.png'
+      imgUrl: '/user.png',
+      contactsWithPhoto: []
     };
   }
 
   getPath = id => 'users/' + id + '.png';
 
   async componentDidMount() {
+    console.log(new Date().getMilliseconds());
     const url = await Storage.get(this.getPath(this.props.user.userId));
     imageExists(url, result => {
       if (result)
@@ -27,22 +29,42 @@ class Profile extends Component {
   }
 
   async componentDidUpdate() {
-    if (!this.state.contactsWithPhoto) {
-      const contacts = this.props.contacts.map(async contact => {
-        const url = await Storage.get(this.getPath(contact.userId));
-        imageExists(url, result => {
-          if (result) {
-            contact.img = url;
-          } else {
-            contact.img = '/user.png';
-          }
+    console.log(new Date().getMilliseconds());
+    if (!this.state.loadInProgress) {
+      this.setState({ loadInProgress: true });
+      this.props.contacts.forEach(contact => {
+        Storage.get(this.getPath(contact.userId)).then(url => {
+          imageExists(url, r => {
+            if (r) contact.img = url;
+            else contact.img = '/user.png';
+            console.log(new Date().getMilliseconds());
+            console.log(contact);
+            console.log(JSON.stringify(contact));
+            this.setState(prevState => ({
+              contactsWithPhoto: [...prevState.contactsWithPhoto, contact]
+            }));
+          });
         });
-        return contact;
       });
-      Promise.all(contacts).then(loaded => {
-        console.log(loaded);
-        this.setState({ contactsWithPhoto: loaded });
-      });
+      // const contacts = await Promise.all(this.props.contacts.map(async contact => {
+      //   const url = await Storage.get(this.getPath(contact.userId));
+      //   imageExists(url, result => {
+      //     if (result) {
+      //       contact.img = url;
+      //
+      //       console.log("in imageExists ");
+      //       console.log(new Date().getMilliseconds())
+      //       console.log(url);
+      //       console.log(contact.img)
+      //     } else {
+      //       contact.img = '/user.png';
+      //     }
+      //   });
+      //   console.log(contact)
+      //   return contact;
+      // }))
+      // console.log(JSON.stringify(contacts));
+      // this.setState({ contactsWithPhoto: contacts });
     }
   }
 

@@ -46,31 +46,12 @@ class Profile extends Component {
           });
         });
       });
-      // const contacts = await Promise.all(this.props.contacts.map(async contact => {
-      //   const url = await Storage.get(this.getPath(contact.userId));
-      //   imageExists(url, result => {
-      //     if (result) {
-      //       contact.img = url;
-      //
-      //       console.log("in imageExists ");
-      //       console.log(new Date().getMilliseconds())
-      //       console.log(url);
-      //       console.log(contact.img)
-      //     } else {
-      //       contact.img = '/user.png';
-      //     }
-      //   });
-      //   console.log(contact)
-      //   return contact;
-      // }))
-      // console.log(JSON.stringify(contacts));
-      // this.setState({ contactsWithPhoto: contacts });
     }
   }
 
   onChange = async e => {
     const file = e.target.files[0];
-    const res = await Storage.put(this.getPath(this.props.user.userId), file, {
+    await Storage.put(this.getPath(this.props.user.userId), file, {
       contentType: file.type
     });
     const url = await Storage.get(this.getPath(this.props.user.userId));

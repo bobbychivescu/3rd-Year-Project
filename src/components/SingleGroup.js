@@ -59,7 +59,7 @@ class SingleGroup extends Component {
                 set={this.setAppState}
               />
             ) : (
-              <GroupContent group={this.state.group} />
+              <GroupContent {...this.props} group={this.state.group} />
             )}
           </div>
         )}

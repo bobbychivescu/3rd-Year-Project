@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Button, Container } from 'reactstrap';
+import { Button, Container, Row, Col } from 'reactstrap';
 import Dropzone from 'react-dropzone';
 import { Storage } from 'aws-amplify';
 import { v1 } from 'uuid';
+import axios from 'axios';
 
 class GroupContent extends Component {
   state = {};
@@ -11,7 +12,19 @@ class GroupContent extends Component {
   async componentDidMount() {
     //do smth with dis
     const list = await Storage.list(this.path);
-    console.log(list);
+    this.setState({
+      posts: await Promise.all(
+        list.map(async item => {
+          const url = await Storage.get(item.key);
+          item.url = url;
+          if (item.key.endsWith('.txt')) {
+            const text = await axios.get(url);
+            item.text = text.data;
+          }
+          return item;
+        })
+      )
+    });
   }
 
   onDrop = (acceptedFiles, rejectedFiles) => {
@@ -76,6 +89,22 @@ class GroupContent extends Component {
             </div>
           )}
         </Dropzone>
+        {this.state.posts &&
+          this.state.posts.map(post => {
+            let content;
+            if (post.key.endsWith('.txt')) {
+              content = <h5>{post.text}</h5>;
+            } else {
+              content = <img src={post.url} />;
+            }
+            return (
+              <Row>
+                <Col md="6" className="m-2">
+                  {content}
+                </Col>
+              </Row>
+            );
+          })}
       </div>
     );
   }

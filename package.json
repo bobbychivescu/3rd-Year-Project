@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "private": true,
+  "isPrivate": true,
   "dependencies": {
     "aws-amplify": "^1.1.19",
     "aws-amplify-react": "^2.3.0",

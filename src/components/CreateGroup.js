@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Input, Button } from 'reactstrap';
-import { API } from 'aws-amplify';
 import DateTimePicker from 'react-datetime-picker';
 import SelectMembers from './SelectMembers';
+
+import { createGroup } from '../apiWrapper';
 
 class CreateGroup extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class CreateGroup extends Component {
 
   changeDate = date => this.setState({ date });
 
-  togglePrivate = () => this.setState({ private: !this.state.private });
+  togglePrivate = () => this.setState({ isPrivate: !this.state.private });
 
   addMember = id => this.setState({ members: [...this.state.members, id] });
 
@@ -33,16 +34,16 @@ class CreateGroup extends Component {
       const group = {
         name: this.state.name,
         endDate: this.state.date,
-        private: this.state.private,
+        isPrivate: this.state.private,
         members: [...this.state.members, this.props.user.userId]
       };
       if (this.state.desc) group['description'] = this.state.desc;
-      const response = await API.post('3YP', '/groups', {
-        body: group
-      });
-      this.props.history.push('/groups/' + this.state.name);
-      console.log(response);
-      //redirect probs and hendle duplicate
+      if (await createGroup(group)) {
+        //think of way to update all state
+        this.props.history.push('/groups/' + this.state.name);
+      } else {
+        alert('A group with this name already exists');
+      }
     }
   };
 

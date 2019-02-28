@@ -31,7 +31,7 @@ class Settings extends Component {
 
   signOut = () => {
     Auth.signOut().then(() => {
-      this.props.onStateChange('SignedOut');
+      this.props.history.push('/');
     });
   };
 

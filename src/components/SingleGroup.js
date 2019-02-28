@@ -4,6 +4,7 @@ import { API } from 'aws-amplify';
 import { Icon } from 'react-icons-kit';
 import { ic_settings } from 'react-icons-kit/md/ic_settings';
 
+import { getGroup } from '../apiWrapper';
 import EditGroup from './EditGroup';
 import GroupContent from './GroupContent';
 class SingleGroup extends Component {
@@ -11,7 +12,7 @@ class SingleGroup extends Component {
 
   async componentDidMount() {
     this.setState({
-      group: await API.get('3YP', '/groups/' + this.props.match.params.name)
+      group: await getGroup(this.props.match.params.name)
     });
   }
 
@@ -20,10 +21,7 @@ class SingleGroup extends Component {
       !this.state.group ||
       this.state.group.name !== this.props.match.params.name
     ) {
-      const response = await API.get(
-        '3YP',
-        '/groups/' + this.props.match.params.name
-      );
+      const response = await getGroup(this.props.match.params.name);
       this.setState({ group: response, settings: false });
     }
   }

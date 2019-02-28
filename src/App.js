@@ -46,8 +46,10 @@ class App extends Component {
       this.setState({ groups: await getGroups(this.state.user.groups.values) });
     } else {
       //called after groups were set
+      //remove stale groups from user recors
+      //same for stale contacts (maybe they deleted their accounts)
+      //will be in apiWrapper
       console.log('handle stale data');
-      console.log(this.state);
     }
   }
 
@@ -92,8 +94,9 @@ class App extends Component {
                 />
                 <Route
                   path="/settings"
-                  render={() => (
+                  render={props => (
                     <Settings
+                      {...props}
                       user={this.state.user}
                       setAppState={this.setAppState}
                     />

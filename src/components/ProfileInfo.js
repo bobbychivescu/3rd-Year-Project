@@ -2,17 +2,12 @@ import React, { Component } from 'react';
 import { Button, InputGroup, Input } from 'reactstrap';
 import { API } from 'aws-amplify';
 
-const noBio = 'no bio added';
-
 class ProfileInfo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      nickname: '',
-      bio: '',
-      edit: false
-    };
-  }
+  state = {
+    nickname: '',
+    bio: '',
+    edit: false
+  };
 
   changeNickname = e => {
     this.setState({ nickname: e.target.value });

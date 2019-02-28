@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { Button, Container, Input } from 'reactstrap';
 import DateTimePicker from 'react-datetime-picker';
 import SelectMembers from './SelectMembers';
-import { API } from 'aws-amplify';
+
+import { removeMembers, editGroup, addMembers } from '../apiWrapper';
 
 class EditGroup extends Component {
   constructor(props) {
     super(props);
     const d = new Date(this.props.group.endDate);
     this.state = {
-      private: this.props.group.private,
+      isPrivate: this.props.group.private,
       members: [],
       membersToRemove: [],
       date: d
@@ -21,67 +22,53 @@ class EditGroup extends Component {
 
   changeDate = date => this.setState({ date });
 
-  togglePrivate = () => this.setState({ private: !this.state.private });
+  togglePrivate = () => this.setState({ isPrivate: !this.state.isPrivate });
 
   addMember = id => this.setState({ members: [...this.state.members, id] });
+
   removeMember = id =>
     this.setState({ membersToRemove: [...this.state.membersToRemove, id] });
 
   save = async () => {
+    const { membersToRemove, isPrivate, members, date, desc } = this.state;
+    const { group } = this.props;
     let updatedGroup = {};
-    if (this.state.membersToRemove.length) {
-      const response = await API.put(
-        '3YP',
-        '/groups/delete/' + this.props.group.name,
-        {
-          body: { members: this.state.membersToRemove }
-        }
-      );
+    if (membersToRemove.length) {
+      const response = await removeMembers(group.name, membersToRemove);
       updatedGroup['members'] = response.data.Attributes.members;
     }
 
-    const group = {};
-    if (this.state.desc) {
-      group['description'] = this.state.desc;
+    const newGroup = {};
+    if (desc) {
+      newGroup['description'] = desc;
     }
-    if (this.state.private !== this.props.group.private) {
-      group['private'] = this.state.private;
+    if (isPrivate !== group.private) {
+      newGroup['private'] = isPrivate;
     }
-    if (
-      this.state.date.getTime() !== new Date(this.props.group.endDate).getTime()
-    ) {
-      group['endDate'] = this.state.date;
+    if (date.getTime() !== new Date(group.endDate).getTime()) {
+      newGroup['endDate'] = date;
     }
-
-    if (Object.keys(group).length !== 0) {
-      const response = await API.put(
-        '3YP',
-        '/groups/' + this.props.group.name,
-        {
-          body: group
-        }
-      );
+    if (Object.keys(newGroup).length !== 0) {
+      const response = await editGroup(group.name, newGroup);
       updatedGroup = { ...updatedGroup, ...response.data.Attributes };
     }
 
     //add memebers directly
-    if (this.state.members.length) {
-      const response = await API.put(
-        '3YP',
-        '/groups/add/' + this.props.group.name,
-        {
-          body: { members: this.state.members }
-        }
-      );
+    if (members.length) {
+      const response = await addMembers(group.name, members);
       updatedGroup['members'] = response.data.Attributes.members;
     }
 
-    updatedGroup = { ...this.props.group, ...updatedGroup };
+    updatedGroup = { ...group, ...updatedGroup };
     this.props.set({ group: updatedGroup, settings: false });
   };
 
+  getDateString = date => {
+    return date.substring(0, 10) + ' ' + date.substring(11, 16);
+  };
+
   render() {
-    var maxDate = new Date(this.props.group.endDate);
+    const maxDate = new Date(this.props.group.endDate);
     maxDate.setDate(maxDate.getDate() + 30);
     return (
       <Container fluid>
@@ -112,7 +99,8 @@ class EditGroup extends Component {
             <hr />
             <h4>End date</h4>
             <p>
-              {/*Current end date is {new Date(this.props.group.endDate)}.*/}
+              Current end date is{' '}
+              <span>{this.getDateString(this.props.group.endDate)}</span>.
               Choose a date and time when this group will expire and be deleted.
             </p>
             <DateTimePicker
@@ -130,7 +118,7 @@ class EditGroup extends Component {
             <label>
               <input
                 type="checkbox"
-                defaultChecked={this.state.private}
+                defaultChecked={this.state.isPrivate}
                 onChange={this.togglePrivate}
                 className="m-1"
               />

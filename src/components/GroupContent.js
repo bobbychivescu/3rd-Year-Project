@@ -10,7 +10,7 @@ class GroupContent extends Component {
   path = 'groups/' + this.props.group.name + '/';
 
   async componentDidMount() {
-    //do smth with dis
+    //sort by date
     const list = await Storage.list(this.path);
     this.setState({
       posts: await Promise.all(
@@ -36,6 +36,7 @@ class GroupContent extends Component {
   changeText = e => this.setState({ text: e.target.value });
 
   //may not need to be async, review at writing in DB
+  //will also be in apiWrapper
   createPost = async () => {
     if (this.state.text) {
       const id = v1();
@@ -99,7 +100,7 @@ class GroupContent extends Component {
             }
             return (
               <Row>
-                <Col md="6" className="m-2">
+                <Col md="6" className="m-md-2">
                   {content}
                 </Col>
               </Row>

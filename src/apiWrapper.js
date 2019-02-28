@@ -1,4 +1,4 @@
-import { API, Auth } from 'aws-amplify';
+import { API, Auth, Storage } from 'aws-amplify';
 
 const getUser = async () => {
   const user = await API.get('3YP', '/profile');
@@ -18,6 +18,8 @@ const firstLogin = async () => {
     }
   });
   const user = await API.get('3YP', '/profile');
+
+  //make this better
   const text = 'Welcome to the app ' + user.nickname;
   API.post('3YP', '/email', {
     body: {
@@ -38,6 +40,8 @@ const getContacts = async contactList => {
 };
 
 const getGroups = async groupList => {
+  //change backend to return groups to delete
+  //call remove group and pics, no await
   return await API.get('3YP', '/groups', {
     queryStringParameters: {
       names: groupList
@@ -45,4 +49,50 @@ const getGroups = async groupList => {
   });
 };
 
-export { getUser, getContacts, getGroups };
+const getGroup = async name => {
+  return await API.get('3YP', '/groups/' + name);
+};
+
+const createGroup = async group => {
+  const response = await API.post('3YP', '/groups', {
+    body: group
+  });
+  //check response and return true for ok, false for duplicate
+  //add group to user record
+  //join contacts
+  return true;
+};
+
+const removeMembers = async (groupName, members) => {
+  //delete group for userS recordS
+  //change back to accept this action from anywhere
+  return await API.put('3YP', '/groups/delete/' + groupName, {
+    body: { members: members }
+  });
+};
+
+const editGroup = async (groupName, data) => {
+  return await API.put('3YP', '/groups/' + groupName, {
+    body: data
+  });
+};
+
+const addMembers = async (groupName, members) => {
+  //add group to userS recordsS
+  //join new members and old memebr in contacts
+  //change back to accept this action from anywhere
+  return await API.put('3YP', '/groups/add/' + groupName, {
+    body: { members: members }
+  });
+};
+
+export {
+  getUser,
+  getContacts,
+  getGroups,
+  getGroup,
+  createGroup,
+  removeMembers,
+  editGroup,
+  addMembers
+};

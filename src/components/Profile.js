@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Col, Row, Spinner } from 'reactstrap';
 import ProfileInfo from './ProfileInfo';
 import Contacts from './Contacts';
-import { API, Storage } from 'aws-amplify';
+import { Storage } from 'aws-amplify';
 
 var imageExists = require('image-exists');
 
@@ -18,7 +18,6 @@ class Profile extends Component {
   getPath = id => 'users/' + id + '.png';
 
   async componentDidMount() {
-    console.log(new Date().getMilliseconds());
     const url = await Storage.get(this.getPath(this.props.user.userId));
     imageExists(url, result => {
       if (result)
@@ -28,8 +27,7 @@ class Profile extends Component {
     });
   }
 
-  async componentDidUpdate() {
-    console.log(new Date().getMilliseconds());
+  componentDidUpdate() {
     if (!this.state.loadInProgress) {
       this.setState({ loadInProgress: true });
       this.props.contacts.forEach(contact => {
@@ -37,9 +35,6 @@ class Profile extends Component {
           imageExists(url, r => {
             if (r) contact.img = url;
             else contact.img = '/user.png';
-            console.log(new Date().getMilliseconds());
-            console.log(contact);
-            console.log(JSON.stringify(contact));
             this.setState(prevState => ({
               contactsWithPhoto: [...prevState.contactsWithPhoto, contact]
             }));

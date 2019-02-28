@@ -99,7 +99,8 @@ class CreateGroup extends Component {
         <h4>Add members</h4>
         <SelectMembers
           contacts={this.props.contacts}
-          add={this.addMember}
+          select={this.addMember}
+          buttonText="Add"
           members={this.state.members}
         />
         <Button onClick={this.create} className="bg-orange">

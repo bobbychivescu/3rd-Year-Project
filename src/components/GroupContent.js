@@ -9,6 +9,7 @@ class GroupContent extends Component {
   state = {};
   path = 'groups/' + this.props.group.name + '/';
 
+  //may need to be moved to component did update to check for new group, path var too
   async componentDidMount() {
     //sort by date
     const list = await Storage.list(this.path);

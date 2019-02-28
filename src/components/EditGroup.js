@@ -55,7 +55,7 @@ class EditGroup extends Component {
 
     //add memebers directly
     if (members.length) {
-      const response = await addMembers(group.name, members);
+      const response = await addMembers(group, members);
       updatedGroup['members'] = response.data.Attributes.members;
     }
 

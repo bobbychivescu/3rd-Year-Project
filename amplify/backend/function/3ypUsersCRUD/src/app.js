@@ -85,7 +85,7 @@ app.put(path +'/:action', function(req, res) {
   const putItemParams = {
     TableName: tableName,
     Key: {
-      userId: req.apiGateway.event.requestContext.identity.cognitoIdentityId
+      userId: req.body.userId ? req.body.userId : req.apiGateway.event.requestContext.identity.cognitoIdentityId
     }
   }
 
@@ -94,7 +94,7 @@ app.put(path +'/:action', function(req, res) {
   const values = {};
 
   for (var property in req.body) {
-    if (req.body.hasOwnProperty(property)) {
+    if (req.body.hasOwnProperty(property) && property !== 'userId') {
       if(expression.length > l) //something was added
         expression += ', ';
 

@@ -31,6 +31,7 @@ const Item = props => {
 class App extends Component {
   state = {};
 
+  //implement periodic all update
   async componentDidMount() {
     this.setState({ user: await getUser() });
   }

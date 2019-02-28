@@ -7,12 +7,27 @@ import axios from 'axios';
 
 class GroupContent extends Component {
   state = {};
-  path = 'groups/' + this.props.group.name + '/';
 
   //may need to be moved to component did update to check for new group, path var too
-  async componentDidMount() {
-    //sort by date
-    const list = await Storage.list(this.path);
+  componentDidMount() {
+    console.log(new Date().getMilliseconds());
+    this.setState({ currentGroup: this.props.group.name });
+    this.update();
+  }
+
+  componentDidUpdate() {
+    if (this.state.currentGroup !== this.props.group.name) {
+      console.log(new Date().getMilliseconds());
+      this.setState({ currentGroup: this.props.group.name });
+      this.update();
+    }
+  }
+
+  getPath = () => 'groups/' + this.props.group.name + '/';
+
+  update = async () => {
+    //sort by date and fetch metadata
+    const list = await Storage.list(this.getPath());
     this.setState({
       posts: await Promise.all(
         list.map(async item => {
@@ -26,7 +41,7 @@ class GroupContent extends Component {
         })
       )
     });
-  }
+  };
 
   onDrop = (acceptedFiles, rejectedFiles) => {
     console.log(acceptedFiles);
@@ -41,13 +56,16 @@ class GroupContent extends Component {
   createPost = async () => {
     if (this.state.text) {
       const id = v1();
-      const r = await Storage.put(this.path + id + '.txt', this.state.text);
+      const r = await Storage.put(
+        this.getPath() + id + '.txt',
+        this.state.text
+      );
     }
 
     if (this.state.files) {
       this.state.files.forEach(async file => {
         const id = v1();
-        const r = await Storage.put(this.path + id + '.png', file, {
+        const r = await Storage.put(this.getPath() + id + '.png', file, {
           contentType: file.type
         });
       });

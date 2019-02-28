@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Container } from 'reactstrap';
-import { API } from 'aws-amplify';
 import { Icon } from 'react-icons-kit';
 import { ic_settings } from 'react-icons-kit/md/ic_settings';
 

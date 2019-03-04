@@ -118,7 +118,10 @@ class GroupContent extends Component {
             </div>
           )}
         </Dropzone>
-        {this.state.posts && this.state.posts.map(post => <Post post={post} />)}
+        {this.state.posts &&
+          this.state.posts.map(post => (
+            <Post user={this.props.user} post={post} />
+          ))}
       </div>
     );
   }

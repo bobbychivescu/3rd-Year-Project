@@ -52,7 +52,7 @@ const convertUrlType = (param, type) => {
  * HTTP Get method for list objects *
  ********************************/
 
-app.get(path + hashKeyPath, function(req, res) {
+app.get(path, function(req, res) {
   var condition = {}
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
@@ -101,8 +101,12 @@ app.get(path + hashKeyPath, function(req, res) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
       if (data.Item) {
+        console.log('am data.item')
+        console.log(data.Item)
         res.json(data.Item);
       } else {
+        console.log('am data')
+        console.log(data)
         res.json(data) ;
       }
     }
@@ -111,26 +115,50 @@ app.get(path + hashKeyPath, function(req, res) {
 
 
 /************************************
-* HTTP put method for insert object *
+* HTTP put method for insert yp *
 *************************************/
 
-app.put(path, function(req, res) {
-  
-  if (userIdPresent) {
-    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+app.put(path +'/:action' + hashKeyPath, function(req, res) {
+
+  const putItemParams = {
+    TableName: tableName,
+    Key: {
+      id: req.params[partitionKeyName]
+    }
   }
 
-  let putItemParams = {
-    TableName: tableName,
-    Item: req.body
-  }
-  dynamodb.put(putItemParams, (err, data) => {
-    if(err) {
-      res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
+  let expression = req.params['action'] + ' ';
+  const l = expression.length;
+  const values = {};
+
+  for (let property in req.body) {
+    if (req.body.hasOwnProperty(property)) {
+      if(expression.length > l) //something was added
+        expression += ', ';
+
+      expression += (property + ' :' + property);
+      values[':' + property] = dynamodb.createSet(req.body[property]);
     }
-  });
+  }
+
+  putItemParams['UpdateExpression'] = expression;
+  putItemParams['ExpressionAttributeValues'] = values;
+  putItemParams['ReturnValues'] = 'UPDATED_NEW';
+
+  console.log(putItemParams)
+  if(expression.length > l) {
+    dynamodb.update(putItemParams, (err, data) => {
+      if(err) {
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'put call succeed!', url: req.url, data: data})
+      }
+    });
+  } else {
+    res.json({status: 'nothing changed', url: req.url});
+  }
+
+
 });
 
 /************************************

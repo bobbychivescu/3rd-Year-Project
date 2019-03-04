@@ -1,0 +1,5 @@
+{
+    "tableName": "3ypPosts",
+    "partitionKeyName": "id",
+    "partitionKeyType": "S"
+}

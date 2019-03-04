@@ -4,7 +4,9 @@ import Dropzone from 'react-dropzone';
 import { Storage } from 'aws-amplify';
 import { v1 } from 'uuid';
 import axios from 'axios';
+import { createTextPost, createFilePost } from '../apiWrapper';
 
+import Post from './Post';
 class GroupContent extends Component {
   state = {};
 
@@ -28,19 +30,21 @@ class GroupContent extends Component {
   update = async () => {
     //sort by date and fetch metadata
     const list = await Storage.list(this.getPath());
+    const posts = await Promise.all(list.map(this.enrich));
+    console.log(posts);
     this.setState({
-      posts: await Promise.all(
-        list.map(async item => {
-          const url = await Storage.get(item.key);
-          item.url = url;
-          if (item.key.endsWith('.txt')) {
-            const text = await axios.get(url);
-            item.text = text.data;
-          }
-          return item;
-        })
-      )
+      posts: posts.sort((a, b) => (a.lastModified < b.lastModified ? 1 : -1))
     });
+  };
+
+  enrich = async item => {
+    const url = await Storage.get(item.key);
+    item.url = url;
+    if (item.key.endsWith('.txt')) {
+      const text = await axios.get(url);
+      item.text = text.data;
+    }
+    return item;
   };
 
   onDrop = (acceptedFiles, rejectedFiles) => {
@@ -53,21 +57,26 @@ class GroupContent extends Component {
 
   //may not need to be async, review at writing in DB
   //will also be in apiWrapper
-  createPost = async () => {
+  createPost = () => {
     if (this.state.text) {
-      const id = v1();
-      const r = await Storage.put(
-        this.getPath() + id + '.txt',
-        this.state.text
-      );
+      createTextPost(this.getPath(), this.state.text, this.props.user.userId)
+        .then(this.enrich)
+        .then(data =>
+          this.setState(prevState => ({
+            posts: [data, ...prevState.posts]
+          }))
+        );
     }
 
     if (this.state.files) {
-      this.state.files.forEach(async file => {
-        const id = v1();
-        const r = await Storage.put(this.getPath() + id + '.png', file, {
-          contentType: file.type
-        });
+      this.state.files.forEach(file => {
+        createFilePost(this.getPath(), file, this.props.user.userId)
+          .then(this.enrich)
+          .then(data =>
+            this.setState(prevState => ({
+              posts: [data, ...prevState.posts]
+            }))
+          );
       });
     }
     this.setState({ text: '', files: null });
@@ -109,22 +118,7 @@ class GroupContent extends Component {
             </div>
           )}
         </Dropzone>
-        {this.state.posts &&
-          this.state.posts.map(post => {
-            let content;
-            if (post.key.endsWith('.txt')) {
-              content = <h5>{post.text}</h5>;
-            } else {
-              content = <img src={post.url} />;
-            }
-            return (
-              <Row>
-                <Col md="6" className="m-md-2">
-                  {content}
-                </Col>
-              </Row>
-            );
-          })}
+        {this.state.posts && this.state.posts.map(post => <Post post={post} />)}
       </div>
     );
   }

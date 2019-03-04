@@ -1,4 +1,5 @@
 import { API, Auth, Storage } from 'aws-amplify';
+import { v1 } from 'uuid';
 
 const getUser = async () => {
   const user = await API.get('3YP', '/profile');
@@ -128,6 +129,26 @@ const addMembers = async (group, members) => {
   });
 };
 
+const createTextPost = async (path, text, userId) => {
+  const id = v1();
+  const response = await Storage.put(path + id + '.txt', text);
+  await API.put('3YP', '/posts', {
+    body: { id: id, createdBy: userId }
+  });
+  return response;
+};
+
+const createFilePost = async (path, file, userId) => {
+  const id = v1();
+  const response = await Storage.put(path + id + '.png', file, {
+    contentType: file.type
+  });
+  await API.put('3YP', '/posts', {
+    body: { id: id, createdBy: userId }
+  });
+  return response;
+};
+
 export {
   getUser,
   getContacts,
@@ -136,5 +157,7 @@ export {
   createGroup,
   removeMembers,
   editGroup,
-  addMembers
+  addMembers,
+  createTextPost,
+  createFilePost
 };

@@ -165,6 +165,17 @@
 				}
 			}
 		},
+		"storage3ypPosts": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/3ypPosts-cloudformation-template.json",
+				"Parameters": {
+					"tableName": "3ypPosts",
+					"partitionKeyName": "id",
+					"partitionKeyType": "S"
+				}
+			}
+		},
 		"function3ypUsersCRUD": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -212,6 +223,26 @@
 				}
 			}
 		},
+		"function3ypPostsCRUD": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypPostsCRUD-cloudformation-template.json",
+				"Parameters": {
+					"storage3ypPostsName": {
+						"Fn::GetAtt": [
+							"storage3ypPosts",
+							"Outputs.Name"
+						]
+					},
+					"storage3ypPostsArn": {
+						"Fn::GetAtt": [
+							"storage3ypPosts",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
 		"api3YP": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -250,6 +281,18 @@
 					"function3ypGroupsCRUDArn": {
 						"Fn::GetAtt": [
 							"function3ypGroupsCRUD",
+							"Outputs.Arn"
+						]
+					},
+					"function3ypPostsCRUDName": {
+						"Fn::GetAtt": [
+							"function3ypPostsCRUD",
+							"Outputs.Name"
+						]
+					},
+					"function3ypPostsCRUDArn": {
+						"Fn::GetAtt": [
+							"function3ypPostsCRUD",
 							"Outputs.Arn"
 						]
 					}

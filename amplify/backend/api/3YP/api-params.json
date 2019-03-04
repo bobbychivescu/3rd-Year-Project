@@ -23,6 +23,14 @@
                 "private": true,
                 "auth": "rw"
             }
+        },
+        {
+            "name": "/posts",
+            "lambdaFunction": "3ypPostsCRUD",
+            "privacy": {
+                "private": true,
+                "auth": "rw"
+            }
         }
     ],
     "resourceName": "3YP",
@@ -36,10 +44,13 @@
         },
         {
             "lambdaFunction": "3ypGroupsCRUD"
+        },
+        {
+            "lambdaFunction": "3ypPostsCRUD"
         }
     ],
     "privacy": {
-        "auth": 3,
+        "auth": 4,
         "unauth": 0,
         "authRoleName": "a3rdyearproject-20190128153122-authRole",
         "unAuthRoleName": "a3rdyearproject-20190128153122-unauthRole"
@@ -68,7 +79,15 @@
                 "Name",
                 "Arn"
             ]
+        },
+        {
+            "category": "function",
+            "resourceName": "3ypPostsCRUD",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
         }
     ],
-    "uuid": "e439c0cf"
+    "uuid": "94c824e7"
 }

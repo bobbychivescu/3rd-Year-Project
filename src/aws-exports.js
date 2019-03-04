@@ -16,6 +16,10 @@ const awsmobile = {
     {
       tableName: '3ypGroups',
       region: 'eu-west-1'
+    },
+    {
+      tableName: '3ypPosts',
+      region: 'eu-west-1'
     }
   ],
   aws_user_files_s3_bucket: '3rdyearproject073248366c144452bb2fafc07aa28f6d',

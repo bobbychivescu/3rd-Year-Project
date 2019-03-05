@@ -132,7 +132,7 @@ const addMembers = async (group, members) => {
 const createTextPost = async (path, text, userId) => {
   const id = v1();
   const response = await Storage.put(path + id + '.txt', text);
-  await API.put('3YP', '/posts', {
+  await API.post('3YP', '/posts', {
     body: { id: id, createdBy: userId }
   });
   return response;
@@ -143,7 +143,7 @@ const createFilePost = async (path, file, userId) => {
   const response = await Storage.put(path + id + '.png', file, {
     contentType: file.type
   });
-  await API.put('3YP', '/posts', {
+  await API.post('3YP', '/posts', {
     body: { id: id, createdBy: userId }
   });
   return response;

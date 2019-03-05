@@ -4,15 +4,22 @@ import { API } from 'aws-amplify';
 class Post extends Component {
   state = {};
 
-  id = this.props.post.key.substr(this.props.post.key.lastIndexOf('/') + 1, 36);
+  getId = () =>
+    this.props.post.key.substr(this.props.post.key.lastIndexOf('/') + 1, 36);
 
   async componentDidMount() {
-    const resp = await API.get('3YP', '/posts/' + this.id);
+    const resp = await API.get('3YP', '/posts/' + this.getId());
     this.setState({ post: resp });
+    console.log(resp);
+  }
+
+  async componentDidUpdate() {
+    if (this.state.post && this.state.post.id !== this.getId())
+      this.setState({ post: await API.get('3YP', '/posts/' + this.getId()) });
   }
 
   yp = () => {
-    API.put('3YP', '/posts/add/' + this.id, {
+    API.put('3YP', '/posts/add/' + this.getId(), {
       body: { yp: [this.props.user.userId] }
     }).then(res => {
       if (res.data) {
@@ -32,13 +39,21 @@ class Post extends Component {
       innerContent = <img src={post.url} />;
     }
 
+    const isLoaded = this.state.post && this.state.post.yp;
     const content = (
       <div>
         {innerContent}
-        <Button onClick={this.yp} className="bg-orange mr-1">
+        <Button
+          onClick={this.yp}
+          disabled={
+            isLoaded &&
+            this.state.post.yp.values.includes(this.props.user.userId)
+          }
+          className="bg-orange mr-1"
+        >
           YePee
         </Button>
-        {this.state.post && this.state.post.yp && (
+        {isLoaded && (
           <p className="d-inline-block">
             {this.state.post.yp.values.length} YP!
           </p>

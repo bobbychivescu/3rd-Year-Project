@@ -38,50 +38,6 @@ app.use(function(req, res, next) {
   next()
 });
 
-// convert url string param to expected Type
-const convertUrlType = (param, type) => {
-  switch(type) {
-    case "N":
-      return Number.parseInt(param);
-    default:
-      return param;
-  }
-}
-
-/********************************
- * HTTP Get method for list objects *
- ********************************/
-
-app.get(path, function(req, res) {
-  var condition = {}
-  condition[partitionKeyName] = {
-    ComparisonOperator: 'EQ'
-  }
-  
-  if (userIdPresent && req.apiGateway) {
-    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
-  } else {
-    try {
-      condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
-    } catch(err) {
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
-
-  let queryParams = {
-    TableName: tableName,
-    KeyConditions: condition
-  } 
-
-  dynamodb.query(queryParams, (err, data) => {
-    if (err) {
-      res.json({error: 'Could not load items: ' + err});
-    } else {
-      res.json(data.Items);
-    }
-  });
-});
-
 /*****************************************
  * HTTP Get method for get single object *
  *****************************************/
@@ -101,16 +57,45 @@ app.get(path + hashKeyPath, function(req, res) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
       if (data.Item) {
-        console.log('am data.item')
-        console.log(data.Item)
         res.json(data.Item);
       } else {
-        console.log('am data')
-        console.log(data)
         res.json(data) ;
       }
     }
   });
+});
+
+
+/************************************
+ * HTTP put method for insert comment *
+ *************************************/
+
+app.put(path +'/comment' + hashKeyPath, function(req, res) {
+
+  const putItemParams = {
+    TableName: tableName,
+    Key: {
+      id: req.params[partitionKeyName]
+    }
+  };
+
+  putItemParams['UpdateExpression'] = 'SET comments = list_append(if_not_exists(comments, :empty), :comments)';
+  putItemParams['ExpressionAttributeValues'] = {
+    ':comments': [req.body.comment],
+    ':empty': []
+  };
+  putItemParams['ReturnValues'] = 'UPDATED_NEW';
+
+  console.log(putItemParams)
+    dynamodb.update(putItemParams, (err, data) => {
+      if(err) {
+        res.json({error: err, url: req.url, body: req.body});
+      } else{
+        res.json({success: 'put call succeed!', url: req.url, data: data})
+      }
+    });
+
+
 });
 
 
@@ -160,6 +145,8 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
 
 
 });
+
+
 
 /************************************
 * HTTP post method for insert object *
@@ -221,7 +208,4 @@ app.listen(3000, function() {
     console.log("App started")
 });
 
-// Export the app object. When executing the application local this does nothing. However,
-// to port it to AWS Lambda we will create a wrapper around that will load the app from
-// this file
 module.exports = app

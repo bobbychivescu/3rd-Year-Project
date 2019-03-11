@@ -56,6 +56,10 @@ img {
   max-height: 100%;
 }
 
+.comment-input {
+  width: 75%;
+}
+
 @media screen and (max-width: 768px) {
   .topbar {
     position: relative;
@@ -97,6 +101,10 @@ img {
 
   .group {
     width: 150px;
+  }
+
+  .comment-input {
+    width: 60%;
   }
 }
 

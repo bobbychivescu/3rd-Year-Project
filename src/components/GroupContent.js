@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Container, Row, Col } from 'reactstrap';
 import Dropzone from 'react-dropzone';
-import { Storage } from 'aws-amplify';
 import { v1 } from 'uuid';
-import axios from 'axios';
-import { createTextPost, createFilePost } from '../apiWrapper';
+import { createTextPost, createFilePost, getPosts } from '../apiWrapper';
 
 import Post from './Post';
 class GroupContent extends Component {
@@ -12,14 +10,12 @@ class GroupContent extends Component {
 
   //may need to be moved to component did update to check for new group, path var too
   componentDidMount() {
-    console.log(new Date().getMilliseconds());
     this.setState({ currentGroup: this.props.group.name });
     this.update();
   }
 
   componentDidUpdate() {
     if (this.state.currentGroup !== this.props.group.name) {
-      console.log(new Date().getMilliseconds());
       this.setState({ currentGroup: this.props.group.name });
       this.update();
     }
@@ -28,23 +24,9 @@ class GroupContent extends Component {
   getPath = () => 'groups/' + this.props.group.name + '/';
 
   update = async () => {
-    //sort by date and fetch metadata
-    const list = await Storage.list(this.getPath());
-    const posts = await Promise.all(list.map(this.enrich));
-    console.log(posts);
     this.setState({
-      posts: posts.sort((a, b) => (a.lastModified < b.lastModified ? 1 : -1))
+      posts: await getPosts(this.getPath())
     });
-  };
-
-  enrich = async item => {
-    const url = await Storage.get(item.key);
-    item.url = url;
-    if (item.key.endsWith('.txt')) {
-      const text = await axios.get(url);
-      item.text = text.data;
-    }
-    return item;
   };
 
   onDrop = (acceptedFiles, rejectedFiles) => {
@@ -55,28 +37,27 @@ class GroupContent extends Component {
 
   changeText = e => this.setState({ text: e.target.value });
 
-  //may not need to be async, review at writing in DB
-  //will also be in apiWrapper
   createPost = () => {
     if (this.state.text) {
-      createTextPost(this.getPath(), this.state.text, this.props.user.userId)
-        .then(this.enrich)
-        .then(data =>
-          this.setState(prevState => ({
-            posts: [data, ...prevState.posts]
-          }))
-        );
+      createTextPost(
+        this.getPath(),
+        this.state.text,
+        this.props.user.userId
+      ).then(data =>
+        this.setState(prevState => ({
+          posts: [data, ...prevState.posts]
+        }))
+      );
     }
 
     if (this.state.files) {
       this.state.files.forEach(file => {
-        createFilePost(this.getPath(), file, this.props.user.userId)
-          .then(this.enrich)
-          .then(data =>
+        createFilePost(this.getPath(), file, this.props.user.userId).then(
+          data =>
             this.setState(prevState => ({
               posts: [data, ...prevState.posts]
             }))
-          );
+        );
       });
     }
     this.setState({ text: '', files: null });

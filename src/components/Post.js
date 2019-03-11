@@ -10,7 +10,6 @@ class Post extends Component {
   async componentDidMount() {
     const resp = await API.get('3YP', '/posts/' + this.getId());
     this.setState({ post: resp });
-    console.log(resp);
   }
 
   async componentDidUpdate() {
@@ -18,6 +17,7 @@ class Post extends Component {
       this.setState({ post: await API.get('3YP', '/posts/' + this.getId()) });
   }
 
+  //move to wrapper
   yp = () => {
     API.put('3YP', '/posts/add/' + this.getId(), {
       body: { yp: [this.props.user.userId] }
@@ -39,6 +39,7 @@ class Post extends Component {
       innerContent = <img src={post.url} />;
     }
 
+    //check for new post from props change
     const isLoaded = this.state.post && this.state.post.yp;
     const content = (
       <div>

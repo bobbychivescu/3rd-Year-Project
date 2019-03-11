@@ -1,5 +1,6 @@
 import { API, Auth, Storage } from 'aws-amplify';
 import { v1 } from 'uuid';
+import axios from 'axios';
 
 const getUser = async () => {
   const user = await API.get('3YP', '/profile');
@@ -135,7 +136,7 @@ const createTextPost = async (path, text, userId) => {
   await API.post('3YP', '/posts', {
     body: { id: id, createdBy: userId }
   });
-  return response;
+  return await enrich(response);
 };
 
 const createFilePost = async (path, file, userId) => {
@@ -146,7 +147,23 @@ const createFilePost = async (path, file, userId) => {
   await API.post('3YP', '/posts', {
     body: { id: id, createdBy: userId }
   });
-  return response;
+  return await enrich(response);
+};
+
+const getPosts = async path => {
+  const list = await Storage.list(path);
+  const posts = await Promise.all(list.map(enrich));
+  return posts.sort((a, b) => (a.lastModified < b.lastModified ? 1 : -1));
+};
+
+const enrich = async item => {
+  const url = await Storage.get(item.key);
+  item.url = url;
+  if (item.key.endsWith('.txt')) {
+    const text = await axios.get(url);
+    item.text = text.data;
+  }
+  return item;
 };
 
 export {
@@ -159,5 +176,6 @@ export {
   editGroup,
   addMembers,
   createTextPost,
-  createFilePost
+  createFilePost,
+  getPosts
 };

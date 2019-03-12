@@ -133,9 +133,11 @@ const addMembers = async (group, members) => {
 const createTextPost = async (path, text, userId) => {
   const id = v1();
   const response = await Storage.put(path + id + '.txt', text);
-  await API.post('3YP', '/posts', {
+  API.post('3YP', '/posts', {
     body: { id: id, createdBy: userId }
   });
+  response.id = id;
+  response.createdBy = userId;
   return await enrich(response);
 };
 
@@ -144,16 +146,30 @@ const createFilePost = async (path, file, userId) => {
   const response = await Storage.put(path + id + '.png', file, {
     contentType: file.type
   });
-  await API.post('3YP', '/posts', {
+  API.post('3YP', '/posts', {
     body: { id: id, createdBy: userId }
   });
+  response.id = id;
+  response.createdBy = userId;
   return await enrich(response);
 };
 
+const getIdfromKey = key => key.substr(key.lastIndexOf('/') + 1, 36);
+
 const getPosts = async path => {
   const list = await Storage.list(path);
+  const meta = await API.get('3YP', '/posts', {
+    queryStringParameters: {
+      names: list.map(item => getIdfromKey(item.key))
+    }
+  });
   const posts = await Promise.all(list.map(enrich));
-  return posts.sort((a, b) => (a.lastModified < b.lastModified ? 1 : -1));
+  return posts
+    .map(post => {
+      const info = meta.find(el => el.id === getIdfromKey(post.key));
+      return { ...post, ...info };
+    })
+    .sort((a, b) => (a.lastModified < b.lastModified ? 1 : -1));
 };
 
 const enrich = async item => {

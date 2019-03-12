@@ -110,6 +110,7 @@ class App extends Component {
                       groups={this.state.groups}
                       user={this.state.user}
                       contacts={this.state.contacts}
+                      setAppState={this.setAppState}
                     />
                   )}
                 />

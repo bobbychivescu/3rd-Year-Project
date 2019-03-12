@@ -38,6 +38,38 @@ app.use(function(req, res, next) {
   next()
 });
 
+
+
+/********************************
+ * HTTP Get method for list objects *
+ ********************************/
+
+app.get(path, function(req, res) {
+  const params = {};
+  params[tableName] = {
+    Keys: req.apiGateway.event.multiValueQueryStringParameters.names.map((item) => {
+      return {
+        id: item
+      }
+    })
+  };
+
+  const q = {
+    RequestItems: params
+  };
+
+  console.log(params);
+  dynamodb.batchGet(q, (err, data) => {
+    if (err) {
+      res.json({error: 'Could not load items: ' + err});
+    } else {
+      res.json(data.Responses[tableName]);
+    }
+  });
+});
+
+
+
 /*****************************************
  * HTTP Get method for get single object *
  *****************************************/
@@ -172,6 +204,7 @@ app.post(path, function(req, res) {
 * HTTP remove method to delete object *
 ***************************************/
 
+//make batch del
 app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
   var params = {};
   if (userIdPresent && req.apiGateway) {

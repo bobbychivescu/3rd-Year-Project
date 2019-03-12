@@ -71,6 +71,15 @@ class GroupContent extends Component {
     return files.substr(0, files.length - 2);
   };
 
+  updatePost = post => {
+    this.setState(prevState => ({
+      posts: prevState.posts.map(p => {
+        if (p.id === post.id) return post;
+        return p;
+      })
+    }));
+  };
+
   render() {
     return (
       <div>
@@ -105,6 +114,7 @@ class GroupContent extends Component {
               user={this.props.user}
               contacts={this.props.contacts}
               post={post}
+              update={this.updatePost}
             />
           ))}
       </div>

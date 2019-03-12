@@ -7,15 +7,15 @@ class Post extends Component {
   getId = () =>
     this.props.post.key.substr(this.props.post.key.lastIndexOf('/') + 1, 36);
 
-  async componentDidMount() {
-    const resp = await API.get('3YP', '/posts/' + this.getId());
-    this.setState({ post: resp });
-  }
-
-  async componentDidUpdate() {
-    if (this.state.post && this.state.post.id !== this.getId())
-      this.setState({ post: await API.get('3YP', '/posts/' + this.getId()) });
-  }
+  // async componentDidMount() {
+  //   const resp = await API.get('3YP', '/posts/' + this.getId());
+  //   this.setState({ post: resp });
+  // }
+  //
+  // async componentDidUpdate() {
+  //   if (this.state.post && this.state.post.id !== this.getId())
+  //     this.setState({ post: await API.get('3YP', '/posts/' + this.getId()) });
+  // }
 
   //move to wrapper
   yp = () => {
@@ -23,9 +23,9 @@ class Post extends Component {
       body: { yp: [this.props.user.userId] }
     }).then(res => {
       if (res.data) {
-        const p = this.state.post;
+        const p = this.props.post;
         p.yp = res.data.Attributes.yp;
-        this.setState({ post: p });
+        this.props.update(p);
       }
     });
   };
@@ -42,9 +42,9 @@ class Post extends Component {
       }
     }).then(res => {
       if (res.data) {
-        const p = this.state.post;
+        const p = this.props.post;
         p.comments = res.data.Attributes.comments;
-        this.setState({ post: p, comment: '' });
+        this.props.update(p);
       }
     });
   };
@@ -64,25 +64,22 @@ class Post extends Component {
       innerContent = <img src={post.url} />;
     }
 
-    //check for new post from props change
-    const isLoaded = this.state.post && this.state.post.id === this.getId();
     const content = (
       <div>
         {innerContent}
         <Button
           onClick={this.yp}
           disabled={
-            isLoaded &&
-            this.state.post.yp &&
-            this.state.post.yp.values.includes(this.props.user.userId)
+            this.props.post.yp &&
+            this.props.post.yp.values.includes(this.props.user.userId)
           }
           className="bg-orange mr-1"
         >
           YePee
         </Button>
-        {isLoaded && this.state.post.yp && (
+        {this.props.post.yp && (
           <p className="d-inline-block">
-            {this.state.post.yp.values.length} YP!
+            {this.props.post.yp.values.length} YP!
           </p>
         )}
       </div>
@@ -94,9 +91,8 @@ class Post extends Component {
           <hr />
         </Col>
         <Col md="6">
-          {isLoaded &&
-            this.state.post.comments &&
-            this.state.post.comments.map(comm => (
+          {this.props.post.comments &&
+            this.props.post.comments.map(comm => (
               <p>
                 <strong>{this.getNickname(comm.user)}</strong> {comm.text}
               </p>

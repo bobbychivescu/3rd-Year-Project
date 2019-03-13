@@ -178,38 +178,28 @@ app.post(path, function(req, res) {
 ***************************************/
 
 //make batch del
-app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
-  var params = {};
-  if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  } else {
-    params[partitionKeyName] = req.params[partitionKeyName];
-     try {
-      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-    } catch(err) {
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
-  if (hasSortKey) {
-    try {
-      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
-    } catch(err) {
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
-
-  let removeItemParams = {
-    TableName: tableName,
-    Key: params
-  }
-  dynamodb.delete(removeItemParams, (err, data)=> {
-    if(err) {
-      res.json({error: err, url: req.url});
-    } else {
-      res.json({url: req.url, data: data});
-    }
+app.delete(path, function(req, res) {
+  const delParams = {
+    '3ypPosts': req.apiGateway.event.multiValueQueryStringParameters.toDelete.map(item => {
+      return {
+        DeleteRequest: {
+          Key: {
+            id: item
+          }
+        }
+      };
+    })
+  };
+  console.log(JSON.stringify(delParams));
+  dynamodb.batchWrite({ RequestItems: delParams }, (err, data) => {
+    if (err) {
+      res.json({err: err});
+      console.log(err, err.stack)
+    } else res.json({data:data});
   });
 });
+
+
 app.listen(3000, function() {
     console.log("App started")
 });

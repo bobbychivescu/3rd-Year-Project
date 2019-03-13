@@ -52,14 +52,38 @@ const getGroups = async groupList => {
 
   console.log(response);
   if (response.toDelete.length > 0) {
-    API.del('3YP', '/groups', {
-      queryStringParameters: {
-        toDelete: response.toDelete
-      }
-    }).then(data => console.log(data));
-    //delete posts from resp.todelete
+    deleteStale(response.toDelete);
   }
   return response.data;
+};
+
+const deleteStale = async groups => {
+  API.del('3YP', '/groups', {
+    queryStringParameters: {
+      toDelete: groups
+    }
+  }).then(data => console.log(data));
+
+  const list = await Promise.all(
+    groups.map(async group => {
+      return await Storage.list('groups/' + group + '/');
+    })
+  );
+
+  console.log(list);
+  const flatList = [].concat.apply([], list);
+
+  console.log(flatList);
+
+  flatList.forEach(item => {
+    Storage.remove(item.key).then(resp => console.log(resp));
+  });
+
+  API.del('3YP', '/posts', {
+    queryStringParameters: {
+      toDelete: flatList.map(item => getIdfromKey(item.key))
+    }
+  }).then(data => console.log(data));
 };
 
 const getGroup = async name => {
@@ -169,18 +193,20 @@ const getIdfromKey = key => key.substr(key.lastIndexOf('/') + 1, 36);
 
 const getPosts = async path => {
   const list = await Storage.list(path);
-  const meta = await API.get('3YP', '/posts', {
-    queryStringParameters: {
-      names: list.map(item => getIdfromKey(item.key))
-    }
-  });
-  const posts = await Promise.all(list.map(enrich));
-  return posts
-    .map(post => {
-      const info = meta.find(el => el.id === getIdfromKey(post.key));
-      return { ...post, ...info };
-    })
-    .sort((a, b) => (a.lastModified < b.lastModified ? 1 : -1));
+  if (list.length > 0) {
+    const meta = await API.get('3YP', '/posts', {
+      queryStringParameters: {
+        names: list.map(item => getIdfromKey(item.key))
+      }
+    });
+    const posts = await Promise.all(list.map(enrich));
+    return posts
+      .map(post => {
+        const info = meta.find(el => el.id === getIdfromKey(post.key));
+        return { ...post, ...info };
+      })
+      .sort((a, b) => (a.lastModified < b.lastModified ? 1 : -1));
+  } else return [];
 };
 
 const enrich = async item => {

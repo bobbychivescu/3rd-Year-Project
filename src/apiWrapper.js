@@ -42,15 +42,12 @@ const getContacts = async contactList => {
 };
 
 const getGroups = async groupList => {
-  //change backend to return groups to delete
-  //call remove group and pics, no await
   const response = await API.get('3YP', '/groups', {
     queryStringParameters: {
       names: groupList
     }
   });
 
-  console.log(response);
   if (response.toDelete.length > 0) {
     deleteStale(response.toDelete);
   }
@@ -70,10 +67,7 @@ const deleteStale = async groups => {
     })
   );
 
-  console.log(list);
   const flatList = [].concat.apply([], list);
-
-  console.log(flatList);
 
   flatList.forEach(item => {
     Storage.remove(item.key).then(resp => console.log(resp));
@@ -218,6 +212,32 @@ const enrich = async item => {
   return item;
 };
 
+const removeStaleData = async (state, set) => {
+  const staleContacts = state.user.contacts
+    ? state.user.contacts.values.filter(
+        c => !state.contacts.map(item => item.userId).includes(c)
+      )
+    : [];
+
+  const staleGroups = state.user.groups
+    ? state.user.groups.values.filter(
+        g => !state.groups.map(item => item.name).includes(g)
+      )
+    : [];
+
+  const body = {};
+  if (staleContacts.length > 0) body.contacts = staleContacts;
+  if (staleGroups.length > 0) body.groups = staleGroups;
+
+  if (body.contacts || body.groups) {
+    const resp = await API.put('3YP', '/profile/delete', {
+      body: body
+    });
+    const u = { ...state.user, ...resp.data.Attributes };
+    set({ user: u });
+  }
+};
+
 export {
   getUser,
   getContacts,
@@ -229,5 +249,6 @@ export {
   addMembers,
   createTextPost,
   createFilePost,
-  getPosts
+  getPosts,
+  removeStaleData
 };

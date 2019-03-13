@@ -11,7 +11,7 @@ import { group } from 'react-icons-kit/fa/group';
 import { ic_settings } from 'react-icons-kit/md/ic_settings';
 import { Nav, NavItem, Container, Spinner } from 'reactstrap';
 
-import { getUser, getContacts, getGroups } from './apiWrapper';
+import { getUser, getContacts, getGroups, removeStaleData } from './apiWrapper';
 import Home from './components/Home';
 import Profile from './components/Profile';
 import Settings from './components/Settings';
@@ -46,11 +46,7 @@ class App extends Component {
       //called after contacts were set
       this.setState({ groups: await getGroups(this.state.user.groups.values) });
     } else {
-      //called after groups were set
-      //remove stale groups from user recors
-      //same for stale contacts (maybe they deleted their accounts)
-      //will be in apiWrapper
-      console.log('handle stale data');
+      removeStaleData(this.state, this.setAppState);
     }
   }
 

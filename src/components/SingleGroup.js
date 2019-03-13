@@ -10,18 +10,29 @@ class SingleGroup extends Component {
   state = {};
 
   async componentDidMount() {
-    this.setState({
-      group: await getGroup(this.props.match.params.name)
-    });
+    await this.update();
   }
 
+  update = async () => {
+    const g = await getGroup(this.props.match.params.name);
+    if (g.error) {
+      this.setState({ error: this.props.match.params.name });
+    } else {
+      this.setState({
+        group: g,
+        settings: false
+      });
+    }
+  };
+
   async componentDidUpdate() {
+    console.log(JSON.stringify(this.state));
+    if (this.state.error === this.props.match.params.name) return;
     if (
       !this.state.group ||
       this.state.group.name !== this.props.match.params.name
     ) {
-      const response = await getGroup(this.props.match.params.name);
-      this.setState({ group: response, settings: false });
+      this.update();
     }
   }
 
@@ -38,17 +49,18 @@ class SingleGroup extends Component {
   render() {
     return (
       <Container>
-        <div className="m-2">
-          <h2 className="d-inline-block">{this.props.match.params.name}</h2>
-          <Button
-            onClick={this.toggleSettings}
-            className="bg-orange float-right"
-          >
-            <Icon size="24" icon={ic_settings} />
-          </Button>
-        </div>
         {this.state.group && (
           <div>
+            <div className="mx-2">
+              <h2 className="d-inline-block">{this.state.group.name}</h2>
+              <Button
+                onClick={this.toggleSettings}
+                className="bg-orange float-right"
+              >
+                <Icon size="24" icon={ic_settings} />
+              </Button>
+            </div>
+
             {this.state.settings ? (
               <EditGroup
                 {...this.props}

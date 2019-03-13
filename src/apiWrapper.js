@@ -94,8 +94,7 @@ const createGroup = async group => {
   const response = await API.post('3YP', '/groups', {
     body: group
   });
-  //check response and return true for ok, false for duplicate
-
+  if (response.error) return false;
   group.members.forEach(userId => {
     const toEdit = {
       userId: userId,

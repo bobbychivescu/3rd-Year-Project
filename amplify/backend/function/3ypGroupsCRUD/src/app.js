@@ -53,18 +53,25 @@ app.get(path, function(req, res) {
     RequestItems: params
   };
 
-  console.log(params);
   dynamodb.batchGet(q, (err, data) => {
     if (err) {
       res.json({error: 'Could not load items: ' + err});
     } else {
       const now = new Date();
-      res.json(data.Responses[tableName].filter((item) => {
+      const result = data.Responses[tableName].filter(item => {
         const date = new Date(item.endDate);
-        return now<date;
-      }));
+        return now < date;
+      });
+      const toDelete = data.Responses[tableName].filter(item => {
+        const date = new Date(item.endDate);
+        return now >= date;
+      }).map(item => item.name);
+      console.log(toDelete)
+      //consider generating a token to secure deletion
+      res.json({data: result, toDelete: toDelete});
     }
   });
+
 });
 
 /*****************************************
@@ -85,8 +92,6 @@ app.get(path + hashKeyPath, function(req, res) {
     if(err) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
-      console.log(data);
-      console.log(req.apiGateway.event.requestContext.identity.cognitoIdentityId);
       if (data.Item && data.Item.members.values.includes(req.apiGateway.event.requestContext.identity.cognitoIdentityId)) {
         res.json(data.Item);
       } else {
@@ -230,6 +235,28 @@ app.post(path, function(req, res) {
 /**************************************
  * HTTP remove method to delete object *
  ***************************************/
+
+app.delete(path, function(req, res) {
+    const delParams = {
+      '3ypGroups': req.apiGateway.event.multiValueQueryStringParameters.toDelete.map(item => {
+        return {
+          DeleteRequest: {
+            Key: {
+              name: item
+            }
+          }
+        };
+      })
+    };
+    console.log(JSON.stringify(delParams));
+    dynamodb.batchWrite({ RequestItems: delParams }, (err, data) => {
+      if (err) {
+        res.json({err: err});
+        console.log(err, err.stack)
+      } else res.json({data:data});
+    });
+});
+
 
 app.delete(path + hashKeyPath, function(req, res) {
   const params = {};

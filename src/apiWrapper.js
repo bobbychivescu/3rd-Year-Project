@@ -44,11 +44,22 @@ const getContacts = async contactList => {
 const getGroups = async groupList => {
   //change backend to return groups to delete
   //call remove group and pics, no await
-  return await API.get('3YP', '/groups', {
+  const response = await API.get('3YP', '/groups', {
     queryStringParameters: {
       names: groupList
     }
   });
+
+  console.log(response);
+  if (response.toDelete.length > 0) {
+    API.del('3YP', '/groups', {
+      queryStringParameters: {
+        toDelete: response.toDelete
+      }
+    }).then(data => console.log(data));
+    //delete posts from resp.todelete
+  }
+  return response.data;
 };
 
 const getGroup = async name => {

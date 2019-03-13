@@ -70,33 +70,6 @@ app.get(path, function(req, res) {
 
 
 
-/*****************************************
- * HTTP Get method for get single object *
- *****************************************/
-
-app.get(path + hashKeyPath, function(req, res) {
-  var params = {};
-
-    params[partitionKeyName] = req.params[partitionKeyName];
-
-  let getItemParams = {
-    TableName: tableName,
-    Key: params
-  }
-
-  dynamodb.get(getItemParams,(err, data) => {
-    if(err) {
-      res.json({error: 'Could not load items: ' + err.message});
-    } else {
-      if (data.Item) {
-        res.json(data.Item);
-      } else {
-        res.json(data) ;
-      }
-    }
-  });
-});
-
 
 /************************************
  * HTTP put method for insert comment *

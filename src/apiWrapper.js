@@ -69,15 +69,18 @@ const deleteStale = async groups => {
 
   const flatList = [].concat.apply([], list);
 
+  console.log(flatList);
   flatList.forEach(item => {
     Storage.remove(item.key).then(resp => console.log(resp));
   });
 
-  API.del('3YP', '/posts', {
-    queryStringParameters: {
-      toDelete: flatList.map(item => getIdfromKey(item.key))
-    }
-  }).then(data => console.log(data));
+  if (flatList.length > 0) {
+    API.del('3YP', '/posts', {
+      queryStringParameters: {
+        toDelete: flatList.map(item => getIdfromKey(item.key))
+      }
+    }).then(data => console.log(data));
+  }
 };
 
 const getGroup = async name => {
@@ -89,35 +92,20 @@ const createGroup = async group => {
     body: group
   });
   if (response.error) return false;
-  group.members.forEach(userId => {
-    const toEdit = {
-      userId: userId,
-      groups: [group.name]
-    };
 
-    if (group.members.length > 1)
-      //creating member not the only one
-      toEdit.contacts = group.members.filter(id => id !== userId);
-
-    API.put('3YP', '/profile/add', {
-      body: toEdit
+  if (group.members.length > 1) {
+    //creating member not the only one
+    API.put('3YP', '/profile/join', {
+      body: {
+        users: group.members
+      }
     }).then(data => console.log('from callback' + JSON.stringify(data)));
-  });
+  }
 
   return true;
 };
 
 const removeMembers = async (groupName, members) => {
-  // members.forEach(userId => {
-  //   API.put('3YP', '/profile/delete', {
-  //     body: {
-  //       userId: userId,
-  //       groups: [groupName]
-  //     }
-  //   }).then(data =>
-  //     console.log('from callback add old to new' + JSON.stringify(data))
-  //   );
-  // });
   return await API.put('3YP', '/groups/delete/' + groupName, {
     body: { members: members }
   });
@@ -130,28 +118,11 @@ const editGroup = async (groupName, data) => {
 };
 
 const addMembers = async (group, members) => {
-  members.forEach(userId => {
-    API.put('3YP', '/profile/add', {
-      body: {
-        userId: userId,
-        //groups: [group.name],
-        contacts: group.members.values
-      }
-    }).then(data =>
-      console.log('from callback add old to new' + JSON.stringify(data))
-    );
-  });
-
-  group.members.values.forEach(userId => {
-    API.put('3YP', '/profile/add', {
-      body: {
-        userId: userId,
-        contacts: members
-      }
-    }).then(data =>
-      console.log('from callback add new to old' + JSON.stringify(data))
-    );
-  });
+  API.put('3YP', '/profile/join', {
+    body: {
+      users: [...group.members.values, ...members]
+    }
+  }).then(data => console.log('from callback' + JSON.stringify(data)));
 
   return await API.put('3YP', '/groups/add/' + group.name, {
     body: { members: members }

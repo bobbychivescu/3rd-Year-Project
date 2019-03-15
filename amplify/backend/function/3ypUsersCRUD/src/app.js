@@ -75,21 +75,50 @@ app.get(path, function(req, res) {
   });
 });
 
+//put for joining contact lists
+
+app.put(path + '/join', function(req, res) {
+  const params = {
+    TableName: tableName,
+    Key: {
+      userId: 'toBeReplaced'
+    },
+    UpdateExpression: 'add contacts :contacts',
+    ExpressionAttributeValues: {
+      ':contacts': [] //all except the key
+    }
+  };
+
+  req.body.users.forEach(user => {
+    params.Key.userId = user;
+    params.ExpressionAttributeValues[':contacts'] =
+      dynamodb.createSet(req.body.users.filter(u => u !== user));
+
+    console.log(params);
+    dynamodb.update(params, (err, data) => {
+      if(err) console.log(err);
+      else {
+        if (user === req.body.users[req.body.users.length -1])
+          res.json({success: true, data:data})
+      }
+    });
+  });
+
+});
 
 //put for adding/removing groups, contacts
 
-app.put(path +'/:action', function(req, res) {
+app.put(path + '/delete', function(req, res) {
 
-  //consider if this should ever be done by other user
-  //add extra userId parama to request
   const putItemParams = {
     TableName: tableName,
     Key: {
-      userId: req.body.userId ? req.body.userId : req.apiGateway.event.requestContext.identity.cognitoIdentityId
-    }
-  }
+      userId: req.apiGateway.event.requestContext.identity.cognitoIdentityId
+    },
+    ReturnValues: 'UPDATED_NEW'
+  };
 
-  let expression = req.params['action'] + ' ';
+  let expression = 'delete ';
   const l = expression.length;
   const values = {};
 
@@ -105,21 +134,14 @@ app.put(path +'/:action', function(req, res) {
 
   putItemParams['UpdateExpression'] = expression;
   putItemParams['ExpressionAttributeValues'] = values;
-  putItemParams['ReturnValues'] = 'UPDATED_NEW';
 
-
-  if(expression.length > l) {
-    dynamodb.update(putItemParams, (err, data) => {
-      if(err) {
-        res.json({error: err, url: req.url, body: req.body});
-      } else{
-        res.json({success: 'put call succeed!', url: req.url, data: data})
-      }
-    });
-  } else {
-    res.json({status: 'nothing changed', url: req.url});
-  }
-
+  dynamodb.update(putItemParams, (err, data) => {
+    if(err) {
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'put call succeed!', url: req.url, data: data})
+    }
+  });
 
 });
 

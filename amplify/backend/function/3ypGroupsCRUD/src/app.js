@@ -101,6 +101,30 @@ app.get(path + hashKeyPath, function(req, res) {
   });
 });
 
+
+const actionGroupToUsers = (verb, group, users) => {
+  const params = {
+    TableName: '3ypUsers',
+    Key: {
+      userId: 'toBeReplaced'
+    },
+    UpdateExpression: verb + ' groups :groups',
+    ExpressionAttributeValues: {
+      ':groups': dynamodb.createSet([group])
+    }
+  };
+
+  users.forEach(member => {
+    params.Key.userId = member;
+    console.log(params);
+    dynamodb.update(params, (err, data) => {
+      if(err) console.log(err, err.stack);
+      else console.log(data);
+    })
+  })
+};
+
+
 //put for adding/removing members
 
 app.put(path +'/:action' + hashKeyPath, function(req, res) {
@@ -133,29 +157,10 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
     }
   });
 
-  const params = {
-    TableName: '3ypUsers',
-    Key: {
-      userId: 'toBeReplaced'
-    },
-    UpdateExpression: req.params['action'] + ' groups :groups',
-    ExpressionAttributeValues: {
-      ':groups': dynamodb.createSet([req.params[partitionKeyName]])
-    }
-  };
-
-  req.body.members.forEach(member => {
-    params.Key.userId = member;
-    console.log(params);
-    dynamodb.update(params, (err, data) => {
-      if(err) console.log(err, err.stack);
-      else console.log(data);
-    })
-  })
+  actionGroupToUsers(req.params['action'], req.params[partitionKeyName], req.body.members)
 
 
 });
-
 
 /************************************
  * HTTP put method for update object *
@@ -233,6 +238,8 @@ app.post(path, function(req, res) {
       res.json({success: 'post call succeed!', url: req.url, data: data})
     }
   });
+
+  actionGroupToUsers('add', req.body.name, req.body.members.values);
 });
 
 /**************************************

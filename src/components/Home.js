@@ -1,42 +1,32 @@
 import React, { Component } from 'react';
 import { API } from 'aws-amplify';
 
+import { Container, Button, Input } from 'reactstrap';
+
 class Home extends Component {
-  constructor(props) {
-    super(props);
-  }
+  state = {};
 
-  get = async () => {
-    const response = await API.get('3YP', '/profile/contacts', {
-      queryStringParameters: {
-        ids: [
-          'eu-west-1:b8ca0ea7-bee5-455d-927f-91bcb1e9937a',
-          'eu-west-1:d8c090a8-3d22-411f-b4f0-3b77b9aa000e'
-        ]
-      }
-    });
-    console.log(response);
-  };
+  changeSearch = e => this.setState({ search: e.target.value });
 
-  post = async () => {
-    const response = await API.post('3YP', '/profile', {
-      body: { nickname: 'superBoiii' }
-    });
-    console.log(response);
-  };
-
-  delete = async () => {
-    const response = await API.del('3YP', '/profile');
-    console.log(response);
+  search = async () => {
+    console.log(this.state.search);
   };
 
   render() {
     return (
-      <div>
-        <button onClick={this.get}>Get</button>
-        <button onClick={this.post}>Post</button>
-        <button onClick={this.delete}>Del</button>
-      </div>
+      <Container>
+        <h1 className="text-center">Welcome to 3YP!</h1>
+        <h5 className="text-center">Search and join public groups</h5>
+        <Input
+          onChange={this.changeSearch}
+          className="half-on-desktop d-block m-auto"
+        />
+        <div className="text-center">
+          <Button onClick={this.search} className="bg-orange my-1">
+            Search
+          </Button>
+        </div>
+      </Container>
     );
   }
 }

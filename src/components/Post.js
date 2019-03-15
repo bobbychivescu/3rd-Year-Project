@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Row, Button } from 'reactstrap';
+import { Col, Row, Button, Input } from 'reactstrap';
 import { API } from 'aws-amplify';
 class Post extends Component {
   state = {};
@@ -92,7 +92,7 @@ class Post extends Component {
                 <strong>{this.getNickname(comm.user)}</strong> {comm.text}
               </p>
             ))}
-          <input
+          <Input
             value={this.state.comment}
             onChange={this.changeComment}
             className="comment-input"

@@ -109,46 +109,49 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
     TableName: tableName,
     Key: {
       name: req.params[partitionKeyName]
+    },
+    UpdateExpression: req.params['action'] + ' members :members',
+    ExpressionAttributeValues: {
+      ':members': dynamodb.createSet(req.body.members),
+      ':member': req.apiGateway.event.requestContext.identity.cognitoIdentityId,
+      ':false': false
+    },
+    ExpressionAttributeNames: {
+      '#p': 'private',
+      '#m': 'members'
+    },
+    ConditionExpression: '#p = :false OR contains(#m, :member)',
+    ReturnValues: 'UPDATED_NEW'
+  };
+
+  console.log(putItemParams);
+  dynamodb.update(putItemParams, (err, data) => {
+    if(err) {
+      res.json({error: err, url: req.url});
+    } else{
+      res.json({success: 'put call succeed!', url: req.url, data: data})
     }
-  }
+  });
 
-  let expression = req.params['action'] + ' ';
-  const l = expression.length;
-  const values = {};
-
-  for (let property in req.body) {
-    if (req.body.hasOwnProperty(property)) {
-      if(expression.length > l) //something was added
-        expression += ', ';
-
-      expression += (property + ' :' + property);
-      values[':' + property] = dynamodb.createSet(req.body[property]);
+  const params = {
+    TableName: '3ypUsers',
+    Key: {
+      userId: 'toBeReplaced'
+    },
+    UpdateExpression: req.params['action'] + ' groups :groups',
+    ExpressionAttributeValues: {
+      ':groups': dynamodb.createSet([req.params[partitionKeyName]])
     }
-  }
+  };
 
-  values[':member'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
-  values[':false'] = false;
-  putItemParams['UpdateExpression'] = expression;
-  putItemParams['ExpressionAttributeValues'] = values;
-  putItemParams['ExpressionAttributeNames'] = {
-    '#p': 'private',
-    '#m': 'members'
-  }
-  putItemParams['ConditionExpression'] = '#p = :false OR contains(#m, :member)';
-  putItemParams['ReturnValues'] = 'UPDATED_NEW';
-
-  console.log(putItemParams)
-  if(expression.length > l) {
-    dynamodb.update(putItemParams, (err, data) => {
-      if(err) {
-        res.json({error: err, url: req.url, body: req.body});
-      } else{
-        res.json({success: 'put call succeed!', url: req.url, data: data})
-      }
-    });
-  } else {
-    res.json({status: 'nothing changed', url: req.url});
-  }
+  req.body.members.forEach(member => {
+    params.Key.userId = member;
+    console.log(params);
+    dynamodb.update(params, (err, data) => {
+      if(err) console.log(err, err.stack);
+      else console.log(data);
+    })
+  })
 
 
 });

@@ -108,16 +108,16 @@ const createGroup = async group => {
 };
 
 const removeMembers = async (groupName, members) => {
-  members.forEach(userId => {
-    API.put('3YP', '/profile/delete', {
-      body: {
-        userId: userId,
-        groups: [groupName]
-      }
-    }).then(data =>
-      console.log('from callback add old to new' + JSON.stringify(data))
-    );
-  });
+  // members.forEach(userId => {
+  //   API.put('3YP', '/profile/delete', {
+  //     body: {
+  //       userId: userId,
+  //       groups: [groupName]
+  //     }
+  //   }).then(data =>
+  //     console.log('from callback add old to new' + JSON.stringify(data))
+  //   );
+  // });
   return await API.put('3YP', '/groups/delete/' + groupName, {
     body: { members: members }
   });
@@ -134,7 +134,7 @@ const addMembers = async (group, members) => {
     API.put('3YP', '/profile/add', {
       body: {
         userId: userId,
-        groups: [group.name],
+        //groups: [group.name],
         contacts: group.members.values
       }
     }).then(data =>

@@ -48,18 +48,19 @@ const getGroups = async groupList => {
     }
   });
 
-  if (response.toDelete.length > 0) {
+  if (response.toDelete.length) {
     deleteStale(response.toDelete);
   }
   return response.data;
 };
 
 const deleteStale = async groups => {
-  API.del('3YP', '/groups', {
-    queryStringParameters: {
-      toDelete: groups
-    }
-  }).then(data => console.log(data));
+  //managed to do this from backend
+  // API.del('3YP', '/groups', {
+  //   queryStringParameters: {
+  //     toDelete: groups
+  //   }
+  // }).then(data => console.log(data));
 
   const list = await Promise.all(
     groups.map(async group => {

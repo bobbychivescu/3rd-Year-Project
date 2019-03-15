@@ -40,35 +40,45 @@ app.get(path, function(req, res) {
   const params = {};
   params[tableName] = {
     Keys: req.apiGateway.event.multiValueQueryStringParameters.names.map((item) => {
-      return {
-        name: item
-      }
-    }), ExpressionAttributeNames: {
-      '#n': 'name'
-    },
+      return { name: item }
+    }),
+    ExpressionAttributeNames: { '#n': 'name' },
     ProjectionExpression:  '#n, endDate, description'
   };
 
-  const q = {
-    RequestItems: params
-  };
+  const q = { RequestItems: params };
 
   dynamodb.batchGet(q, (err, data) => {
     if (err) {
       res.json({error: 'Could not load items: ' + err});
     } else {
       const now = new Date();
-      const result = data.Responses[tableName].filter(item => {
-        const date = new Date(item.endDate);
-        return now < date;
-      });
-      const toDelete = data.Responses[tableName].filter(item => {
-        const date = new Date(item.endDate);
-        return now >= date;
-      }).map(item => item.name);
+      const result = data.Responses[tableName].filter(item => now < new Date(item.endDate));
+      const toDelete = data.Responses[tableName].filter(item => now >= new Date(item.endDate)).map(item => item.name);
       console.log(toDelete)
-      //consider generating a token to secure deletion
-      res.json({data: result, toDelete: toDelete});
+
+      if(toDelete.length > 0){
+
+        const delParams = {
+          '3ypGroups': toDelete.map(item => {
+            return {
+              DeleteRequest: {
+                Key: {
+                  name: item
+                }
+              }
+            };
+          })
+        };
+        console.log(JSON.stringify(delParams));
+        dynamodb.batchWrite({ RequestItems: delParams }, (err, data) => {
+          if (err) {
+            console.log(err, err.stack)
+          } else {
+            res.json({data: result, toDelete: toDelete});
+          }
+        });
+      } else res.json({data: result});
     }
   });
 
@@ -242,32 +252,32 @@ app.post(path, function(req, res) {
   actionGroupToUsers('add', req.body.name, req.body.members.values);
 });
 
+
+
+// app.delete(path, function(req, res) {
+//     const delParams = {
+//       '3ypGroups': req.apiGateway.event.multiValueQueryStringParameters.toDelete.map(item => {
+//         return {
+//           DeleteRequest: {
+//             Key: {
+//               name: item
+//             }
+//           }
+//         };
+//       })
+//     };
+//     console.log(JSON.stringify(delParams));
+//     dynamodb.batchWrite({ RequestItems: delParams }, (err, data) => {
+//       if (err) {
+//         res.json({err: err});
+//         console.log(err, err.stack)
+//       } else res.json({data:data});
+//     });
+// });
+
 /**************************************
  * HTTP remove method to delete object *
  ***************************************/
-
-app.delete(path, function(req, res) {
-    const delParams = {
-      '3ypGroups': req.apiGateway.event.multiValueQueryStringParameters.toDelete.map(item => {
-        return {
-          DeleteRequest: {
-            Key: {
-              name: item
-            }
-          }
-        };
-      })
-    };
-    console.log(JSON.stringify(delParams));
-    dynamodb.batchWrite({ RequestItems: delParams }, (err, data) => {
-      if (err) {
-        res.json({err: err});
-        console.log(err, err.stack)
-      } else res.json({data:data});
-    });
-});
-
-
 app.delete(path + hashKeyPath, function(req, res) {
   const params = {};
   params[partitionKeyName] = req.params[partitionKeyName];

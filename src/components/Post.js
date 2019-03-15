@@ -19,9 +19,7 @@ class Post extends Component {
 
   //move to wrapper
   yp = () => {
-    API.put('3YP', '/posts/add/' + this.getId(), {
-      body: { yp: [this.props.user.userId] }
-    }).then(res => {
+    API.put('3YP', '/posts/add/' + this.getId()).then(res => {
       if (res.data) {
         const p = this.props.post;
         p.yp = res.data.Attributes.yp;
@@ -35,10 +33,7 @@ class Post extends Component {
   comment = () => {
     API.put('3YP', '/posts/comment/' + this.getId(), {
       body: {
-        comment: {
-          user: this.props.user.userId,
-          text: this.state.comment
-        }
+        text: this.state.comment
       }
     }).then(res => {
       if (res.data) {

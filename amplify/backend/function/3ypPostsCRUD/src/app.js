@@ -81,24 +81,26 @@ app.put(path +'/comment' + hashKeyPath, function(req, res) {
     TableName: tableName,
     Key: {
       id: req.params[partitionKeyName]
+    },
+    UpdateExpression: 'SET comments = list_append(if_not_exists(comments, :empty), :comments)',
+    ExpressionAttributeValues: {
+      ':comments': [{
+        user: req.apiGateway.event.requestContext.identity.cognitoIdentityId,
+        text: req.body.text
+      }],
+      ':empty': []
+    },
+    ReturnValues: 'UPDATED_NEW'
+  };
+
+  console.log(putItemParams);
+  dynamodb.update(putItemParams, (err, data) => {
+    if(err) {
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'put call succeed!', url: req.url, data: data})
     }
-  };
-
-  putItemParams['UpdateExpression'] = 'SET comments = list_append(if_not_exists(comments, :empty), :comments)';
-  putItemParams['ExpressionAttributeValues'] = {
-    ':comments': [req.body.comment],
-    ':empty': []
-  };
-  putItemParams['ReturnValues'] = 'UPDATED_NEW';
-
-  console.log(putItemParams)
-    dynamodb.update(putItemParams, (err, data) => {
-      if(err) {
-        res.json({error: err, url: req.url, body: req.body});
-      } else{
-        res.json({success: 'put call succeed!', url: req.url, data: data})
-      }
-    });
+  });
 
 
 });
@@ -114,40 +116,22 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
     TableName: tableName,
     Key: {
       id: req.params[partitionKeyName]
+    },
+    UpdateExpression: req.params['action'] + ' yp :yp',
+    ExpressionAttributeValues: {
+      ':yp': dynamodb.createSet([req.apiGateway.event.requestContext.identity.cognitoIdentityId])
+    },
+    ReturnValues: 'UPDATED_NEW'
+  };
+
+  console.log(putItemParams);
+  dynamodb.update(putItemParams, (err, data) => {
+    if(err) {
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'put call succeed!', url: req.url, data: data})
     }
-  }
-
-  let expression = req.params['action'] + ' ';
-  const l = expression.length;
-  const values = {};
-
-  for (let property in req.body) {
-    if (req.body.hasOwnProperty(property)) {
-      if(expression.length > l) //something was added
-        expression += ', ';
-
-      expression += (property + ' :' + property);
-      values[':' + property] = dynamodb.createSet(req.body[property]);
-    }
-  }
-
-  putItemParams['UpdateExpression'] = expression;
-  putItemParams['ExpressionAttributeValues'] = values;
-  putItemParams['ReturnValues'] = 'UPDATED_NEW';
-
-  console.log(putItemParams)
-  if(expression.length > l) {
-    dynamodb.update(putItemParams, (err, data) => {
-      if(err) {
-        res.json({error: err, url: req.url, body: req.body});
-      } else{
-        res.json({success: 'put call succeed!', url: req.url, data: data})
-      }
-    });
-  } else {
-    res.json({status: 'nothing changed', url: req.url});
-  }
-
+  });
 
 });
 

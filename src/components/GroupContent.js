@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Container, Row, Col } from 'reactstrap';
+import { Button, Container, Row, Col, Spinner } from 'reactstrap';
 import Dropzone from 'react-dropzone';
 import { v1 } from 'uuid';
 import { createTextPost, createFilePost, getPosts } from '../apiWrapper';
@@ -108,7 +108,7 @@ class GroupContent extends Component {
             </div>
           )}
         </Dropzone>
-        {this.state.posts &&
+        {this.state.posts ? (
           this.state.posts.map(post => (
             <Post
               user={this.props.user}
@@ -116,7 +116,10 @@ class GroupContent extends Component {
               post={post}
               update={this.updatePost}
             />
-          ))}
+          ))
+        ) : (
+          <Spinner color="warning" className="m-5" />
+        )}
       </div>
     );
   }

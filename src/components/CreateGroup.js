@@ -23,7 +23,7 @@ class CreateGroup extends Component {
 
   changeDate = date => this.setState({ date });
 
-  togglePrivate = () => this.setState({ isPrivate: !this.state.private });
+  togglePrivate = () => this.setState({ private: !this.state.private });
 
   addMember = id => this.setState({ members: [...this.state.members, id] });
 
@@ -34,7 +34,7 @@ class CreateGroup extends Component {
       const group = {
         name: this.state.name,
         endDate: this.state.date,
-        isPrivate: this.state.private,
+        private: this.state.private,
         members: [...this.state.members, this.props.user.userId]
       };
       if (this.state.desc) group['description'] = this.state.desc;

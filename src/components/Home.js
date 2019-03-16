@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import { API } from 'aws-amplify';
-
-import { Container, Button, Input } from 'reactstrap';
+import {
+  Container,
+  Button,
+  Input,
+  Row,
+  Col,
+  Card,
+  CardBody,
+  CardText
+} from 'reactstrap';
+import { addMembers } from '../apiWrapper';
 
 class Home extends Component {
   state = {};
@@ -9,7 +18,22 @@ class Home extends Component {
   changeSearch = e => this.setState({ search: e.target.value });
 
   search = async () => {
-    console.log(this.state.search);
+    const res = await API.get('3YP', '/groups/search/' + this.state.search);
+    console.log(res);
+    this.setState({ groups: res.data.Items });
+  };
+
+  join = async group => {
+    console.log(group);
+    const resp = await addMembers(group, [this.props.user.userId]);
+    this.setState({
+      groups: this.state.groups.map(g => {
+        if (g.name === group.name) {
+          g.members = resp.data.Attributes.members;
+          return g;
+        } else return g;
+      })
+    });
   };
 
   render() {
@@ -26,6 +50,31 @@ class Home extends Component {
             Search
           </Button>
         </div>
+        <Row>
+          {this.state.groups &&
+            this.state.groups.map(g => (
+              <Col md="3">
+                <Card className="my-2 bej">
+                  <CardBody className="text-center">
+                    <h3>{g.name}</h3>
+                    <CardText>
+                      {g.description
+                        ? g.description
+                        : 'no description available'}
+                    </CardText>
+                  </CardBody>
+                  {g.members &&
+                  g.members.values.includes(this.props.user.userId) ? (
+                    <p>Already a member!</p>
+                  ) : (
+                    <Button onClick={() => this.join(g)} className="bg-orange">
+                      Join
+                    </Button>
+                  )}
+                </Card>
+              </Col>
+            ))}
+        </Row>
       </Container>
     );
   }

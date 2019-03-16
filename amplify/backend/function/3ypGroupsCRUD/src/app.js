@@ -112,6 +112,29 @@ app.get(path + hashKeyPath, function(req, res) {
 });
 
 
+app.get(path + '/search/:token', function(req, res) {
+  const params = {
+    TableName: tableName,
+    ExpressionAttributeValues: {
+      ':token': req.params['token'],
+      ':false': false
+    },
+    ExpressionAttributeNames: { '#n': 'name', '#p': 'private' },
+    ProjectionExpression:  '#n, description, members',
+    FilterExpression: '#p = :false AND contains(#n, :token)'
+  };
+
+  dynamodb.scan(params, (err, data) => {
+    if(err){
+      console.log(err, err.stack);
+      res.json({error: err})
+    } else {
+      res.json({data: data});
+    }
+  })
+});
+
+
 const actionGroupToUsers = (verb, group, users) => {
   const params = {
     TableName: '3ypUsers',

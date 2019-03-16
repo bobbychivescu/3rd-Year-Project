@@ -48,7 +48,7 @@ const getGroups = async groupList => {
     }
   });
 
-  if (response.toDelete.length) {
+  if (response.toDelete) {
     deleteStale(response.toDelete);
   }
   return response.data;

@@ -81,18 +81,13 @@ app.patch(path, function(req, res) {
     TableName: tableName,
     Key: {
       userId: 'toBeReplaced'
-    }
-  };
-
-  if(req.body.notifications){
-    params['UpdateExpression'] = 'SET notifications = list_append(if_not_exists(notifications, :empty), :notifications)';
-    params['ExpressionAttributeValues'] = {
-      ':notifications': req.body.notifications,
+    },
+    UpdateExpression: 'SET notifications = list_append(if_not_exists(notifications, :empty), :notifications)',
+    ExpressionAttributeValues: {
+      ':notifications': [req.body.notification],
       ':empty': []
     }
-  } else {
-    params['UpdateExpression'] = 'REMOVE notifications'
-  }
+  };
 
   req.body.users.forEach(id => {
     params.Key.userId = id;
@@ -101,10 +96,28 @@ app.patch(path, function(req, res) {
       if(err) console.log(err);
       else {
         if (id === req.body.users[req.body.users.length -1])
-          res.json({success: true, data:data})
+          res.json({data:data})
       }
     });
   })
+});
+
+
+
+app.patch(path + '/clear', function(req, res) {
+  const params = {
+    TableName: tableName,
+    Key: {
+      userId: req.apiGateway.event.requestContext.identity.cognitoIdentityId
+    },
+    UpdateExpression: 'REMOVE notifications'
+  };
+
+  console.log(params);
+  dynamodb.update(params, (err, data) => {
+    if(err) res.json({error: err});
+    else res.json({data: data})
+  });
 });
 
 

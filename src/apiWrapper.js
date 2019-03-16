@@ -211,22 +211,17 @@ const removeStaleData = async (state, set) => {
 };
 
 const notify = async (users, notification) => {
-  //add email sending and modify back to take single notification
-  return API.patch('3YP', '/profile', {
+  //add email sending
+  return await API.patch('3YP', '/profile', {
     body: {
       users: users,
-      notifications: [notification]
+      notification: notification
     }
   });
 };
 
-const clearNotifications = async users => {
-  //may want to separate this into 2 functions in back
-  return API.patch('3YP', '/profile', {
-    body: {
-      users: users
-    }
-  });
+const clearNotifications = async () => {
+  return await API.patch('3YP', '/profile/clear');
 };
 
 export {

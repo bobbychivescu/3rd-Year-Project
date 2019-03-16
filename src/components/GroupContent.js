@@ -60,7 +60,7 @@ class GroupContent extends Component {
       //   path: '/groups/' + this.props.group.name + '/someIdMaybe'
       // })
 
-      clearNotifications(this.props.group.members.values);
+      //clearNotifications();
     }
 
     if (this.state.files) {

@@ -75,6 +75,39 @@ app.get(path, function(req, res) {
   });
 });
 
+
+app.patch(path, function(req, res) {
+  const params = {
+    TableName: tableName,
+    Key: {
+      userId: 'toBeReplaced'
+    }
+  };
+
+  if(req.body.notifications){
+    params['UpdateExpression'] = 'SET notifications = list_append(if_not_exists(notifications, :empty), :notifications)';
+    params['ExpressionAttributeValues'] = {
+      ':notifications': req.body.notifications,
+      ':empty': []
+    }
+  } else {
+    params['UpdateExpression'] = 'REMOVE notifications'
+  }
+
+  req.body.users.forEach(id => {
+    params.Key.userId = id;
+    console.log(params);
+    dynamodb.update(params, (err, data) => {
+      if(err) console.log(err);
+      else {
+        if (id === req.body.users[req.body.users.length -1])
+          res.json({success: true, data:data})
+      }
+    });
+  })
+});
+
+
 //put for joining contact lists
 
 app.put(path + '/join', function(req, res) {

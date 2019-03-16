@@ -210,6 +210,25 @@ const removeStaleData = async (state, set) => {
   }
 };
 
+const notify = async (users, notification) => {
+  //add email sending and modify back to take single notification
+  return API.patch('3YP', '/profile', {
+    body: {
+      users: users,
+      notifications: [notification]
+    }
+  });
+};
+
+const clearNotifications = async users => {
+  //may want to separate this into 2 functions in back
+  return API.patch('3YP', '/profile', {
+    body: {
+      users: users
+    }
+  });
+};
+
 export {
   getUser,
   getContacts,
@@ -222,5 +241,7 @@ export {
   createTextPost,
   createFilePost,
   getPosts,
-  removeStaleData
+  removeStaleData,
+  notify,
+  clearNotifications
 };

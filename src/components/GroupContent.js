@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import { Button, Container, Row, Col, Spinner } from 'reactstrap';
 import Dropzone from 'react-dropzone';
 import { v1 } from 'uuid';
-import { createTextPost, createFilePost, getPosts } from '../apiWrapper';
+import {
+  createTextPost,
+  createFilePost,
+  getPosts,
+  notify,
+  clearNotifications
+} from '../apiWrapper';
 
 import Post from './Post';
 class GroupContent extends Component {
@@ -48,6 +54,13 @@ class GroupContent extends Component {
           posts: [data, ...prevState.posts]
         }))
       );
+
+      // notify(this.props.group.members.values, {
+      //   text: this.props.user.nickname + ' added a post in ' + this.props.group.name,
+      //   path: '/groups/' + this.props.group.name + '/someIdMaybe'
+      // })
+
+      clearNotifications(this.props.group.members.values);
     }
 
     if (this.state.files) {

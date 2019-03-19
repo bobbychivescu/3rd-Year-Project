@@ -39,7 +39,13 @@ class CreateGroup extends Component {
       };
       if (this.state.desc) group['description'] = this.state.desc;
       if (await createGroup(group)) {
-        this.props.setAppState({ groups: [group, ...this.props.groups] });
+        let groups;
+        if (this.props.groups) {
+          groups = [group, ...this.props.groups];
+        } else {
+          groups = [group];
+        }
+        this.props.setAppState({ groups: groups });
         this.props.history.push('/groups/' + this.state.name);
       } else {
         alert('A group with this name already exists');

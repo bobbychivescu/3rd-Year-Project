@@ -16,6 +16,7 @@ import Home from './components/Home';
 import Profile from './components/Profile';
 import Settings from './components/Settings';
 import Groups from './components/Groups';
+import Notifications from './components/Notifications';
 Amplify.configure(aws_exports);
 
 const Item = props => {
@@ -61,6 +62,13 @@ class App extends Component {
           <a className="navbar-brand" href="#">
             3YP
           </a>
+          {this.state.user && (
+            <Notifications
+              user={this.state.user}
+              history={this.props.history}
+              set={this.setAppState}
+            />
+          )}
         </nav>
         <Container fluid className="under-topbar my-2">
           <aside className="sidebar">

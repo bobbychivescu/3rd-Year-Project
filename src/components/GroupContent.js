@@ -49,18 +49,23 @@ class GroupContent extends Component {
         this.getPath(),
         this.state.text,
         this.props.user.userId
-      ).then(data =>
+      ).then(data => {
         this.setState(prevState => ({
           posts: [data, ...prevState.posts]
-        }))
-      );
-
-      // notify(this.props.group.members.values, {
-      //   text: this.props.user.nickname + ' added a post in ' + this.props.group.name,
-      //   path: '/groups/' + this.props.group.name + '/someIdMaybe'
-      // })
-
-      //clearNotifications();
+        }));
+        notify(
+          this.props.group.members.values.filter(
+            m => m !== this.props.user.userId
+          ),
+          {
+            text:
+              this.props.user.nickname +
+              ' added a post in ' +
+              this.props.group.name,
+            path: '/groups/' + this.props.group.name + '#' + data.id
+          }
+        );
+      });
     }
 
     if (this.state.files) {
@@ -124,6 +129,7 @@ class GroupContent extends Component {
         {this.state.posts ? (
           this.state.posts.map(post => (
             <Post
+              id={post.id}
               user={this.props.user}
               contacts={this.props.contacts}
               post={post}

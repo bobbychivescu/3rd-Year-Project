@@ -6,15 +6,13 @@ import {
   createTextPost,
   createFilePost,
   getPosts,
-  notify,
-  clearNotifications
+  notify
 } from '../apiWrapper';
 
 import Post from './Post';
 class GroupContent extends Component {
   state = {};
 
-  //may need to be moved to component did update to check for new group, path var too
   componentDidMount() {
     this.setState({ currentGroup: this.props.group.name });
     this.update();
@@ -43,6 +41,19 @@ class GroupContent extends Component {
 
   changeText = e => this.setState({ text: e.target.value });
 
+  notify = id => {
+    notify(
+      this.props.group.members.values.filter(m => m !== this.props.user.userId),
+      {
+        text:
+          this.props.user.nickname +
+          ' added a post in ' +
+          this.props.group.name,
+        path: '/groups/' + this.props.group.name + '#' + id
+      }
+    );
+  };
+
   createPost = () => {
     if (this.state.text) {
       createTextPost(
@@ -53,28 +64,19 @@ class GroupContent extends Component {
         this.setState(prevState => ({
           posts: [data, ...prevState.posts]
         }));
-        notify(
-          this.props.group.members.values.filter(
-            m => m !== this.props.user.userId
-          ),
-          {
-            text:
-              this.props.user.nickname +
-              ' added a post in ' +
-              this.props.group.name,
-            path: '/groups/' + this.props.group.name + '#' + data.id
-          }
-        );
+        this.notify(data.id);
       });
     }
 
     if (this.state.files) {
       this.state.files.forEach(file => {
         createFilePost(this.getPath(), file, this.props.user.userId).then(
-          data =>
+          data => {
             this.setState(prevState => ({
               posts: [data, ...prevState.posts]
-            }))
+            }));
+            this.notify(data.id);
+          }
         );
       });
     }
@@ -134,6 +136,7 @@ class GroupContent extends Component {
               contacts={this.props.contacts}
               post={post}
               update={this.updatePost}
+              groupName={this.props.group.name}
             />
           ))
         ) : (

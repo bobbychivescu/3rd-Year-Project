@@ -36,7 +36,7 @@ class Notifications extends Component {
         <DropdownToggle caret className="bg-orange">
           Notifications
         </DropdownToggle>
-        <DropdownMenu>
+        <DropdownMenu right>
           {this.props.user.notifications &&
             this.props.user.notifications.map(ntf => (
               <DropdownItem onClick={() => this.open(ntf.path)}>

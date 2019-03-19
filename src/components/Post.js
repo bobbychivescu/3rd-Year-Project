@@ -1,21 +1,12 @@
 import React, { Component } from 'react';
 import { Col, Row, Button, Input } from 'reactstrap';
 import { API } from 'aws-amplify';
+import { notify } from '../apiWrapper';
 class Post extends Component {
   state = {};
 
   getId = () =>
     this.props.post.key.substr(this.props.post.key.lastIndexOf('/') + 1, 36);
-
-  // async componentDidMount() {
-  //   const resp = await API.get('3YP', '/posts/' + this.getId());
-  //   this.setState({ post: resp });
-  // }
-  //
-  // async componentDidUpdate() {
-  //   if (this.state.post && this.state.post.id !== this.getId())
-  //     this.setState({ post: await API.get('3YP', '/posts/' + this.getId()) });
-  // }
 
   //move to wrapper
   yp = () => {
@@ -25,6 +16,10 @@ class Post extends Component {
         p.yp = res.data.Attributes.yp;
         this.props.update(p);
       }
+    });
+    notify([this.props.post.createdBy], {
+      text: this.props.user.nickname + ' up-voted your post',
+      path: '/groups/' + this.props.groupName + '#' + this.props.post.id
     });
   };
 
@@ -40,6 +35,10 @@ class Post extends Component {
         const p = this.props.post;
         p.comments = res.data.Attributes.comments;
         this.props.update(p);
+        notify([this.props.post.createdBy], {
+          text: this.props.user.nickname + ' commented on your post',
+          path: '/groups/' + this.props.groupName + '#' + this.props.post.id
+        });
       }
     });
   };

@@ -3,7 +3,7 @@ import { Button, Container, Input } from 'reactstrap';
 import DateTimePicker from 'react-datetime-picker';
 import SelectMembers from './SelectMembers';
 
-import { removeMembers, editGroup, addMembers } from '../apiWrapper';
+import { removeMembers, editGroup, addMembers, notify } from '../apiWrapper';
 
 class EditGroup extends Component {
   constructor(props) {
@@ -47,6 +47,15 @@ class EditGroup extends Component {
     }
     if (date.getTime() !== new Date(group.endDate).getTime()) {
       newGroup['endDate'] = date;
+      notify(group.members.values.filter(m => m !== this.props.user.userId), {
+        text:
+          this.props.user.nickname +
+          ' extended the end date of ' +
+          group.name +
+          ' to ' +
+          this.getDateString(date),
+        path: '/groups/' + group.name
+      });
     }
     if (Object.keys(newGroup).length !== 0) {
       const response = await editGroup(group.name, newGroup);
@@ -57,6 +66,11 @@ class EditGroup extends Component {
     if (members.length) {
       const response = await addMembers(group, members);
       updatedGroup['members'] = response.data.Attributes.members;
+      notify(members, {
+        text:
+          this.props.user.nickname + ' added you to the group ' + group.name,
+        path: '/groups/' + group.name
+      });
     }
 
     updatedGroup = { ...group, ...updatedGroup };

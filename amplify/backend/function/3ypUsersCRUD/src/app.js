@@ -85,11 +85,9 @@ app.get(path, function(req, res) {
 
 
 app.patch(path, function(req, res) {
-  const params = {
+  const updateParams = {
     TableName: tableName,
-    Key: {
-      userId: 'toBeReplaced'
-    },
+    Key: { userId: 'toBeReplaced' },
     UpdateExpression: 'SET notifications = list_append(if_not_exists(notifications, :empty), :notifications)',
     ExpressionAttributeValues: {
       ':notifications': [req.body.notification],
@@ -97,14 +95,63 @@ app.patch(path, function(req, res) {
     }
   };
 
+  const getParams = {
+    RequestItems: {}
+  };
+  getParams.RequestItems[tableName] = {
+    Keys: req.body.users.map((item) => {
+      return {
+        userId: item
+      }
+    }),
+    ProjectionExpression: 'emailNotifications, email'
+  };
+
+  const mailOptions = {
+    from: "projectmanagementapp8@gmail.com",
+    subject: '3YP notifications',
+    text: req.body.notification.text,
+    to: ''
+  };
+
   req.body.users.forEach(id => {
-    params.Key.userId = id;
-    console.log(params);
-    dynamodb.update(params, (err, data) => {
+    updateParams.Key.userId = id;
+    console.log(updateParams);
+    dynamodb.update(updateParams, (err, data) => {
       if(err) console.log(err);
       else {
-        if (id === req.body.users[req.body.users.length -1])
-          res.json({data:data})
+        if (id === req.body.users[req.body.users.length -1]){
+          dynamodb.batchGet(getParams, (err, result) => {
+            if(err) {
+              console.log(err, err.stack);
+              res.json({data:data})
+            } else {
+              console.log('in callback from batchGet');
+              const transporter = nodemailer.createTransport({
+                SES: new AWS.SES()
+              });
+
+              const mailList = result.Responses[tableName]
+                .filter(user => user.emailNotifications)
+                .map(user => user.email);
+
+              if(mailList.length > 0){
+                mailList.forEach(user => {
+                  mailOptions.to = user;
+                  transporter.sendMail(mailOptions, (err, info) => {
+                    if (err) console.log(err, err.stack);
+                    else console.log(info);
+                    if(user === mailList[mailList.length - 1]){
+                      res.json({data:data});
+                    }
+                  });
+                })
+              } else {
+                res.json({data:data});
+              }
+            }
+          });
+        }
       }
     });
   })

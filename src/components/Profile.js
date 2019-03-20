@@ -77,7 +77,10 @@ class Profile extends Component {
           </Col>
         </Row>
         <hr />
-        <Contacts contacts={this.state.contactsWithPhoto} />
+        <Contacts
+          contacts={this.state.contactsWithPhoto}
+          user={this.props.user}
+        />
       </Container>
     );
   }

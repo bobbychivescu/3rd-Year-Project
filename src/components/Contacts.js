@@ -13,6 +13,7 @@ import {
   Input,
   Button
 } from 'reactstrap';
+import { API } from 'aws-amplify';
 
 class Contacts extends Component {
   state = {
@@ -32,8 +33,15 @@ class Contacts extends Component {
     });
   };
 
-  getInTouch = id => {
-    console.log(id);
+  getInTouch = async id => {
+    await API.post('3YP', '/profile/contact', {
+      body: {
+        contact: id,
+        userNickname: this.props.user.nickname,
+        userEmail: this.props.user.email
+      }
+    });
+    alert('Message sent!');
   };
 
   render() {

@@ -334,6 +334,45 @@ app.post(path, function(req, res) {
 });
 
 
+app.post(path + '/contact', function(req, res) {
+  const params = {
+    TableName: tableName,
+    Key: {
+      userId: req.body.contact
+    },
+    ProjectionExpression: 'email'
+  };
+
+  const mailOptions = {
+    from: "projectmanagementapp8@gmail.com",
+    subject: 'Contact request',
+    text: 'The user ' +
+      req.body.userNickname +
+      ' wants to get in touch with you. His email is ' +
+      req.body.userEmail,
+    to: ''
+  };
+
+  const transporter = nodemailer.createTransport({
+    SES: new AWS.SES()
+  });
+
+  console.log(params, mailOptions);
+  dynamodb.get(params, (err, data) => {
+    if (err) res.json({error: err});
+    else {
+      mailOptions.to = data.Item.email;
+      transporter.sendMail(mailOptions, (err, info) => {
+        if(err) res.json({error: err});
+        else {
+          console.log('email sent');
+          res.json({info: info});
+        }
+      })
+    }
+  })
+});
+
 /**************************************
  * HTTP remove method to delete object *
  ***************************************/

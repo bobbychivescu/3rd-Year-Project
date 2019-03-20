@@ -19,18 +19,8 @@ const firstLogin = async () => {
       email: cognitoUser.attributes.email
     }
   });
-  const user = await API.get('3YP', '/profile');
 
-  //make this better
-  const text = 'Welcome to the app ' + user.nickname;
-  API.post('3YP', '/email', {
-    body: {
-      to: user.attributes.email,
-      subject: 'Welcome',
-      text: text
-    }
-  });
-  return user;
+  return await API.get('3YP', '/profile');
 };
 
 const getContacts = async contactList => {
@@ -55,13 +45,6 @@ const getGroups = async groupList => {
 };
 
 const deleteStale = async groups => {
-  //managed to do this from backend
-  // API.del('3YP', '/groups', {
-  //   queryStringParameters: {
-  //     toDelete: groups
-  //   }
-  // }).then(data => console.log(data));
-
   const list = await Promise.all(
     groups.map(async group => {
       return await Storage.list('groups/' + group + '/');

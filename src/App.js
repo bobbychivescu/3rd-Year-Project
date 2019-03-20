@@ -34,6 +34,7 @@ class App extends Component {
 
   //implement periodic all update
   async componentDidMount() {
+    console.log(this.props);
     this.setState({ user: await getUser() });
   }
 
@@ -102,6 +103,7 @@ class App extends Component {
                   render={props => (
                     <Settings
                       {...props}
+                      afterDelete={this.props.onStateChange}
                       user={this.state.user}
                       setAppState={this.setAppState}
                     />

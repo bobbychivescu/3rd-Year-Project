@@ -4,6 +4,7 @@ var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware'
 var bodyParser = require('body-parser')
 var express = require('express')
 var generateName = require('sillyname');
+var nodemailer = require('nodemailer');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -44,7 +45,14 @@ app.get(path + '/contacts', function(req, res) {
     if (err) {
       res.json({error: 'Could not load items: ' + err});
     } else {
-      res.json(data.Responses[tableName]);
+      res.json(data.Responses[tableName].map(user => {
+        if (user.emailPublic) {
+          return user;
+        } else {
+          user.email = null;
+          return user;
+        }
+      }));
     }
   });
 });
@@ -152,7 +160,7 @@ app.put(path + '/join', function(req, res) {
 
 });
 
-//put for adding/removing groups, contacts
+//put for removing groups, contacts
 
 app.put(path + '/delete', function(req, res) {
 
@@ -243,7 +251,7 @@ app.post(path, function(req, res) {
   req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId;
   req.body['nickname'] = generateName();
   req.body['emailNotifications'] = true;
-  req.body['emailPublic'] = true;
+  req.body['emailPublic'] = false;
 
   const putItemParams = {
     TableName: tableName,
@@ -254,7 +262,26 @@ app.post(path, function(req, res) {
     if(err) {
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'post call succeed!', url: req.url, data: data})
+      const transporter = nodemailer.createTransport({
+        SES: new AWS.SES()
+      });
+
+      const mailOptions = {
+        from: "projectmanagementapp8@gmail.com",
+        subject: 'Welcome to 3YP!',
+        text: 'Thank you for joining! You have been given the nickname ' +
+          req.body.nickname + '. You can change it in the profile section of the app.',
+        to: req.body.email
+      };
+
+      transporter.sendMail(mailOptions, function (err, info) {
+        if (err) {
+          console.log("Error sending email: " + JSON.stringify(err));
+          res.json({error: err, data: data});
+        } else {
+          res.json({success: 'post call succeed!', data: data, info: info})
+        }
+      });
     }
   });
 });

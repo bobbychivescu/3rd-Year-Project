@@ -71,9 +71,7 @@ class Settings extends Component {
     if (window.confirm('Are you sure you want to continue?')) {
       API.del('3YP', '/profile');
       const user = await Auth.currentAuthenticatedUser();
-      user.deleteUser(() => {
-        this.props.onStateChange();
-      });
+      user.deleteUser(this.props.afterDelete);
     }
   };
 

@@ -62,15 +62,21 @@ class Home extends Component {
                         ? g.description
                         : 'no description available'}
                     </CardText>
+                    <hr />
+                    {g.members &&
+                    g.members.values.includes(this.props.user.userId) ? (
+                      <p>
+                        <strong>Already a member!</strong>
+                      </p>
+                    ) : (
+                      <Button
+                        onClick={() => this.join(g)}
+                        className="bg-orange"
+                      >
+                        Join
+                      </Button>
+                    )}
                   </CardBody>
-                  {g.members &&
-                  g.members.values.includes(this.props.user.userId) ? (
-                    <p>Already a member!</p>
-                  ) : (
-                    <Button onClick={() => this.join(g)} className="bg-orange">
-                      Join
-                    </Button>
-                  )}
                 </Card>
               </Col>
             ))}

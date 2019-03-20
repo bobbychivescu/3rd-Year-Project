@@ -59,11 +59,11 @@ const deleteStale = async groups => {
   });
 
   if (flatList.length > 0) {
-    API.del('3YP', '/posts', {
+    await API.del('3YP', '/posts', {
       queryStringParameters: {
         toDelete: flatList.map(item => getIdfromKey(item.key))
       }
-    }).then(data => console.log(data));
+    });
   }
 };
 
@@ -207,6 +207,11 @@ const clearNotifications = async () => {
   return await API.patch('3YP', '/profile/clear');
 };
 
+const deleteGroup = async group => {
+  await API.del('3YP', '/groups/' + group);
+  await deleteStale([group]);
+};
+
 export {
   getUser,
   getContacts,
@@ -221,5 +226,6 @@ export {
   getPosts,
   removeStaleData,
   notify,
-  clearNotifications
+  clearNotifications,
+  deleteGroup
 };

@@ -60,7 +60,7 @@ class App extends Component {
     return (
       <div>
         <nav className="topbar">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand ml-2" href="#">
             3YP
           </a>
           {this.state.user && (

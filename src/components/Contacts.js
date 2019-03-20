@@ -32,6 +32,10 @@ class Contacts extends Component {
     });
   };
 
+  getInTouch = id => {
+    console.log(id);
+  };
+
   render() {
     return (
       <div className="text-center">
@@ -59,10 +63,19 @@ class Contacts extends Component {
                     )}
                     <CardBody>
                       <h3>{item.nickname}</h3>
-                      <CardSubtitle>
-                        {item.emailPublic ? item.email : <button>mail</button>}
-                      </CardSubtitle>
                       <CardText className="hide-in-mobile">{item.bio}</CardText>
+                      <CardSubtitle>
+                        {item.emailPublic ? (
+                          item.email
+                        ) : (
+                          <Button
+                            onClick={() => this.getInTouch(item.userId)}
+                            className="bg-orange"
+                          >
+                            Get in touch
+                          </Button>
+                        )}
+                      </CardSubtitle>
                     </CardBody>
                     <Button
                       onClick={this.toggle}

@@ -5,7 +5,10 @@ import {
   CardBody,
   CardSubtitle,
   Container,
-  Input
+  Row,
+  COl,
+  Input,
+  Col
 } from 'reactstrap';
 
 class SelectMembers extends Component {
@@ -18,6 +21,8 @@ class SelectMembers extends Component {
 
   toggleContacts = () => this.setState({ focused: true });
 
+  toggleBack = () => this.setState({ focused: false });
+
   render() {
     return (
       <Container>
@@ -26,33 +31,38 @@ class SelectMembers extends Component {
           placeholder="search by username, email..."
           onChange={this.changeQuery}
           onFocus={this.toggleContacts}
+          onBlur={this.toggleBack}
         />
-        {this.state.focused &&
-          this.props.contacts
-            .filter(contact => {
-              return (
-                !this.props.members.includes(contact.userId) &&
-                (contact.nickname.includes(this.state.query) ||
-                  (contact.emailPublic &&
-                    contact.email.includes(this.state.query)))
-              );
-            })
-            .map(item => (
-              <Card className="my-2 bej">
-                <CardBody>
-                  <h3>{item.nickname}</h3>
-                  {item.emailPublic && (
-                    <CardSubtitle>{item.email}</CardSubtitle>
-                  )}
-                  <Button
-                    onClick={() => this.props.select(item.userId)}
-                    className="bg-orange"
-                  >
-                    {this.props.buttonText}
-                  </Button>
-                </CardBody>
-              </Card>
-            ))}
+        <Row>
+          {this.state.focused &&
+            this.props.contacts
+              .filter(contact => {
+                return (
+                  !this.props.members.includes(contact.userId) &&
+                  (contact.nickname.includes(this.state.query) ||
+                    (contact.emailPublic &&
+                      contact.email.includes(this.state.query)))
+                );
+              })
+              .map(item => (
+                <Col md="3">
+                  <Card className="my-2 bej">
+                    <CardBody>
+                      <h3>{item.nickname}</h3>
+                      {item.emailPublic && (
+                        <CardSubtitle>{item.email}</CardSubtitle>
+                      )}
+                      <Button
+                        onClick={() => this.props.select(item.userId)}
+                        className="bg-orange"
+                      >
+                        {this.props.buttonText}
+                      </Button>
+                    </CardBody>
+                  </Card>
+                </Col>
+              ))}
+        </Row>
       </Container>
     );
   }

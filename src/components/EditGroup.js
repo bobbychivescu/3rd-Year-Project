@@ -3,7 +3,13 @@ import { Button, Container, Input } from 'reactstrap';
 import DateTimePicker from 'react-datetime-picker';
 import SelectMembers from './SelectMembers';
 
-import { removeMembers, editGroup, addMembers, notify } from '../apiWrapper';
+import {
+  removeMembers,
+  editGroup,
+  addMembers,
+  notify,
+  deleteGroup
+} from '../apiWrapper';
 
 class EditGroup extends Component {
   constructor(props) {
@@ -81,12 +87,32 @@ class EditGroup extends Component {
     return date.substring(0, 10) + ' ' + date.substring(11, 16);
   };
 
+  deleteGroup = async () => {
+    if (window.confirm('Are you sure you want to continue?')) {
+      await deleteGroup(this.props.group.name);
+      window.location.href = '/groups';
+    }
+  };
+
   render() {
     const maxDate = new Date(this.props.group.endDate);
     maxDate.setDate(maxDate.getDate() + 30);
     return (
       <Container fluid>
-        <h2>Edit Group Settings</h2>
+        <h3>Edit Group Settings</h3>
+        <hr />
+        <h5>
+          Current end date is{' '}
+          <span>{this.getDateString(this.props.group.endDate)}</span>.
+        </h5>
+        <hr />
+        <h4>Add members</h4>
+        <SelectMembers
+          contacts={this.props.contacts}
+          select={this.addMember}
+          buttonText="Add"
+          members={[...this.props.group.members.values, ...this.state.members]}
+        />
         <hr />
         {this.props.user.userId === this.props.group.createdBy && (
           <div>
@@ -113,8 +139,6 @@ class EditGroup extends Component {
             <hr />
             <h4>End date</h4>
             <p>
-              Current end date is{' '}
-              <span>{this.getDateString(this.props.group.endDate)}</span>.
               Choose a date and time when this group will expire and be deleted.
             </p>
             <DateTimePicker
@@ -141,16 +165,17 @@ class EditGroup extends Component {
             <hr />
           </div>
         )}
-        <h4>Add members</h4>
-        <SelectMembers
-          contacts={this.props.contacts}
-          select={this.addMember}
-          buttonText="Add"
-          members={[...this.props.group.members.values, ...this.state.members]}
-        />
         <Button onClick={this.save} className="bg-orange">
           Save
         </Button>
+        {this.props.user.userId === this.props.group.createdBy && (
+          <div>
+            <hr />
+            <Button onClick={this.deleteGroup} color="danger">
+              Delete group
+            </Button>
+          </div>
+        )}
       </Container>
     );
   }

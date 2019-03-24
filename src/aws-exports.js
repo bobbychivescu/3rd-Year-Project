@@ -30,7 +30,11 @@ const awsmobile = {
       endpoint: 'https://vzp0iao38b.execute-api.eu-west-1.amazonaws.com/Prod',
       region: 'eu-west-1'
     }
-  ]
+  ],
+  aws_content_delivery_bucket: '3rdyearproject-20190324131931--hostingbucket',
+  aws_content_delivery_bucket_region: 'eu-west-1',
+  aws_content_delivery_url:
+    'http://3rdyearproject-20190324131931--hostingbucket.s3-website-eu-west-1.amazonaws.com'
 };
 
 export default awsmobile;

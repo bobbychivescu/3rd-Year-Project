@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/auth/cognito46197493-cloudformation-template.yml",
 				"logicalId": "authcognito46197493"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.026Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.044Z",
 			"output": {
 				"AppClientSecret": "62uj6ab79l4a6sf4rk22pt2rbibme9kkr3ivhs7nqu1tcd2cvar",
 				"UserPoolId": "eu-west-1_eFoEQcmcB",
@@ -40,7 +40,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/3ypUsers-cloudformation-template.json",
 				"logicalId": "storage3ypUsers"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.027Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.045Z",
 			"output": {
 				"PartitionKeyName": "userId",
 				"Region": "eu-west-1",
@@ -57,7 +57,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
 				"logicalId": "storages32feb684b"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.028Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.045Z",
 			"output": {
 				"BucketName": "3rdyearproject073248366c144452bb2fafc07aa28f6d",
 				"Region": "eu-west-1"
@@ -71,7 +71,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/3ypGroups-cloudformation-template.json",
 				"logicalId": "storage3ypGroups"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.028Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.046Z",
 			"output": {
 				"PartitionKeyName": "name",
 				"Region": "eu-west-1",
@@ -88,7 +88,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/storage/3ypPosts-cloudformation-template.json",
 				"logicalId": "storage3ypPosts"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.029Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.047Z",
 			"output": {
 				"PartitionKeyName": "id",
 				"Region": "eu-west-1",
@@ -121,7 +121,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypUsersCRUD-cloudformation-template.json",
 				"logicalId": "function3ypUsersCRUD"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.035Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.048Z",
 			"output": {
 				"Region": "eu-west-1",
 				"Arn": "arn:aws:lambda:eu-west-1:802863750415:function:3ypUsersCRUD",
@@ -150,7 +150,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypGroupsCRUD-cloudformation-template.json",
 				"logicalId": "function3ypGroupsCRUD"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.032Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.048Z",
 			"output": {
 				"Region": "eu-west-1",
 				"Arn": "arn:aws:lambda:eu-west-1:802863750415:function:3ypGroupsCRUD",
@@ -179,7 +179,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/function/3ypPostsCRUD-cloudformation-template.json",
 				"logicalId": "function3ypPostsCRUD"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.033Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.049Z",
 			"output": {
 				"Region": "eu-west-1",
 				"Arn": "arn:aws:lambda:eu-west-1:802863750415:function:3ypPostsCRUD",
@@ -222,12 +222,30 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/api/3YP-cloudformation-template.json",
 				"logicalId": "api3YP"
 			},
-			"lastPushTimeStamp": "2019-03-20T20:38:25.034Z",
+			"lastPushTimeStamp": "2019-03-24T13:21:35.050Z",
 			"output": {
 				"ApiName": "3YP",
 				"RootUrl": "https://vzp0iao38b.execute-api.eu-west-1.amazonaws.com/Prod"
 			},
 			"lastPushDirHash": "1VNJcuN+ElkHjMD7kfj4MQp0Ld4="
+		}
+	},
+	"hosting": {
+		"S3AndCloudFront": {
+			"service": "S3AndCloudFront",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/a3rdyearproject-20190128153122-deployment/amplify-cfn-templates/hosting/template.json",
+				"logicalId": "hostingS3AndCloudFront"
+			},
+			"lastPushTimeStamp": "2019-03-24T13:21:35.052Z",
+			"output": {
+				"S3BucketSecureURL": "https://3rdyearproject-20190324131931--hostingbucket.s3.amazonaws.com",
+				"WebsiteURL": "http://3rdyearproject-20190324131931--hostingbucket.s3-website-eu-west-1.amazonaws.com",
+				"Region": "eu-west-1",
+				"HostingBucketName": "3rdyearproject-20190324131931--hostingbucket"
+			},
+			"lastPushDirHash": "JT9hDzV6dq/li8JzZ55qutYXuBk="
 		}
 	}
 }

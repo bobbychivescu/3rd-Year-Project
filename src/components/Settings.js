@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Card, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
-import { Auth, API } from 'aws-amplify';
+import { Auth, API, Storage } from 'aws-amplify';
 
 class Settings extends Component {
   state = {
@@ -70,6 +70,7 @@ class Settings extends Component {
   deleteAccount = async () => {
     if (window.confirm('Are you sure you want to continue?')) {
       API.del('3YP', '/profile');
+      Storage.remove('users/' + this.props.user.userId + '.png');
       const user = await Auth.currentAuthenticatedUser();
       user.deleteUser(this.props.afterDelete);
     }

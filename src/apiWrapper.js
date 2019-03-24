@@ -53,7 +53,6 @@ const deleteStale = async groups => {
 
   const flatList = [].concat.apply([], list);
 
-  console.log(flatList);
   flatList.forEach(item => {
     Storage.remove(item.key).then(resp => console.log(resp));
   });

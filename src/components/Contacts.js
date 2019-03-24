@@ -44,6 +44,8 @@ class Contacts extends Component {
     alert('Message sent!');
   };
 
+  onError = e => (e.target.src = '/user.png');
+
   render() {
     return (
       <div className="text-center">
@@ -66,9 +68,12 @@ class Contacts extends Component {
               .map(item => (
                 <Col md="3">
                   <Card className="my-2 bej">
-                    {item.img && (
-                      <CardImg top src={item.img} className="hide-in-mobile" />
-                    )}
+                    <CardImg
+                      top
+                      src={item.img}
+                      onError={this.onError}
+                      className="hide-in-mobile"
+                    />
                     <CardBody>
                       <h3>{item.nickname}</h3>
                       <CardText className="hide-in-mobile">{item.bio}</CardText>
@@ -100,15 +105,9 @@ class Contacts extends Component {
                         {item.nickname}
                       </ModalHeader>
                       <ModalBody>
-                        <h5>
-                          {item.emailPublic ? (
-                            item.email
-                          ) : (
-                            <button>mail</button>
-                          )}
-                        </h5>
+                        {item.emailPublic && <h5>{item.email}</h5>}
                         <p>{item.bio}</p>
-                        <img src={item.img} />
+                        <img src={item.img} onError={this.onError} />
                       </ModalBody>
                     </Modal>
                   </Card>

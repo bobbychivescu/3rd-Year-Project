@@ -26,7 +26,6 @@ class SingleGroup extends Component {
   };
 
   async componentDidUpdate() {
-    console.log(JSON.stringify(this.state));
     if (this.state.error === this.props.match.params.name) return;
     if (
       !this.state.group ||

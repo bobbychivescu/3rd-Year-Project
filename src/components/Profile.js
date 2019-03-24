@@ -44,7 +44,6 @@ class Profile extends Component {
   };
 
   onError = e => {
-    console.log(e.target.src);
     e.target.src = '/user.png';
   };
 

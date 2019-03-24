@@ -15,7 +15,6 @@ class Notifications extends Component {
   toggle = () => this.setState(prevState => ({ open: !prevState.open }));
 
   open = path => {
-    console.log(path);
     this.props.history.push(path);
   };
 

@@ -51,7 +51,6 @@ app.get(path, function(req, res) {
     RequestItems: params
   };
 
-  console.log(params);
   dynamodb.batchGet(q, (err, data) => {
     if (err) {
       res.json({error: 'Could not load items: ' + err});
@@ -86,7 +85,6 @@ app.put(path +'/comment' + hashKeyPath, function(req, res) {
     ReturnValues: 'UPDATED_NEW'
   };
 
-  console.log(putItemParams);
   dynamodb.update(putItemParams, (err, data) => {
     if(err) {
       res.json({error: err, url: req.url, body: req.body});
@@ -117,7 +115,6 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
     ReturnValues: 'UPDATED_NEW'
   };
 
-  console.log(putItemParams);
   dynamodb.update(putItemParams, (err, data) => {
     if(err) {
       res.json({error: err, url: req.url, body: req.body});
@@ -167,7 +164,6 @@ app.delete(path, function(req, res) {
       };
     })
   };
-  console.log(JSON.stringify(delParams));
   dynamodb.batchWrite({ RequestItems: delParams }, (err, data) => {
     if (err) {
       res.json({err: err});

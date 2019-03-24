@@ -37,6 +37,13 @@ body {
   width: calc(100% - 0.5rem);
   border: 1px solid;
 }
+
+.group:hover {
+  border: 0;
+  text-decoration: None;
+  color: white;
+}
+
 .groupnav {
   width: 180px;
   background-color: #e3eaa7;
@@ -106,6 +113,10 @@ img {
   .comment-input {
     width: 60% !important;
   }
+
+  .half-on-desktop {
+    width: 70% !important;
+  }
 }
 
 .settings {
@@ -121,7 +132,7 @@ img {
   }
 
   .half-on-desktop {
-    width: 50% !important;
+    width: 40% !important;
   }
 
   .settings {

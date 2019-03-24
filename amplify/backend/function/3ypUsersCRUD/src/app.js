@@ -116,7 +116,6 @@ app.patch(path, function(req, res) {
 
   req.body.users.forEach(id => {
     updateParams.Key.userId = id;
-    console.log(updateParams);
     dynamodb.update(updateParams, (err, data) => {
       if(err) console.log(err);
       else {
@@ -126,7 +125,6 @@ app.patch(path, function(req, res) {
               console.log(err, err.stack);
               res.json({data:data})
             } else {
-              console.log('in callback from batchGet');
               const transporter = nodemailer.createTransport({
                 SES: new AWS.SES()
               });
@@ -168,7 +166,6 @@ app.patch(path + '/clear', function(req, res) {
     UpdateExpression: 'REMOVE notifications'
   };
 
-  console.log(params);
   dynamodb.update(params, (err, data) => {
     if(err) res.json({error: err});
     else res.json({data: data})
@@ -195,7 +192,6 @@ app.put(path + '/join', function(req, res) {
     params.ExpressionAttributeValues[':contacts'] =
       dynamodb.createSet(req.body.users.filter(u => u !== user));
 
-    console.log(params);
     dynamodb.update(params, (err, data) => {
       if(err) console.log(err);
       else {
@@ -357,7 +353,6 @@ app.post(path + '/contact', function(req, res) {
     SES: new AWS.SES()
   });
 
-  console.log(params, mailOptions);
   dynamodb.get(params, (err, data) => {
     if (err) res.json({error: err});
     else {
@@ -365,7 +360,6 @@ app.post(path + '/contact', function(req, res) {
       transporter.sendMail(mailOptions, (err, info) => {
         if(err) res.json({error: err});
         else {
-          console.log('email sent');
           res.json({info: info});
         }
       })

@@ -19,12 +19,10 @@ class Home extends Component {
 
   search = async () => {
     const res = await API.get('3YP', '/groups/search/' + this.state.search);
-    console.log(res);
     this.setState({ groups: res.data.Items });
   };
 
   join = async group => {
-    console.log(group);
     const resp = await addMembers(group, [this.props.user.userId]);
     this.setState({
       groups: this.state.groups.map(g => {

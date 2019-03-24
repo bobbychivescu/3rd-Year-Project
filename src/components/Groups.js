@@ -22,7 +22,7 @@ class Groups extends Component {
         <aside className="groupnav">
           <Nav className="flex-md-column w-100 h-100 no-wrap">
             <NavItem>
-              <Link to={'/groups'} className="group m-1 p-1">
+              <Link to={'/groups'} className="group m-1 p-1 no-hover">
                 <h5>Create new group</h5>
               </Link>
             </NavItem>

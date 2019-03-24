@@ -42,6 +42,7 @@ class ProfileInfo extends Component {
     const user = this.props.user;
     return (
       <div className="my-3 justify-content-around">
+        <p className="mb-0">{user.email}</p>
         {this.state.edit ? (
           <div>
             <InputGroup size="lg">

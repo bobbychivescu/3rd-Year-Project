@@ -17,10 +17,11 @@ class Post extends Component {
         this.props.update(p);
       }
     });
-    notify([this.props.post.createdBy], {
-      text: this.props.user.nickname + ' up-voted your post',
-      path: '/groups/' + this.props.groupName + '#' + this.props.post.id
-    });
+    if (this.props.post.createdBy !== this.props.user.userId)
+      notify([this.props.post.createdBy], {
+        text: this.props.user.nickname + ' up-voted your post',
+        path: '/groups/' + this.props.groupName + '#' + this.props.post.id
+      });
   };
 
   changeComment = e => this.setState({ comment: e.target.value });
@@ -35,10 +36,11 @@ class Post extends Component {
         const p = this.props.post;
         p.comments = res.data.Attributes.comments;
         this.props.update(p);
-        notify([this.props.post.createdBy], {
-          text: this.props.user.nickname + ' commented on your post',
-          path: '/groups/' + this.props.groupName + '#' + this.props.post.id
-        });
+        if (this.props.post.createdBy !== this.props.user.userId)
+          notify([this.props.post.createdBy], {
+            text: this.props.user.nickname + ' commented on your post',
+            path: '/groups/' + this.props.groupName + '#' + this.props.post.id
+          });
       }
     });
   };
@@ -53,9 +55,23 @@ class Post extends Component {
     const post = this.props.post;
     let innerContent;
     if (post.key.endsWith('.txt')) {
-      innerContent = <h5>{post.text}</h5>;
+      innerContent = (
+        <div>
+          <p className="mb-0">
+            <strong>{this.getNickname(post.createdBy)}</strong> said:
+          </p>
+          <h5>{post.text}</h5>
+        </div>
+      );
     } else {
-      innerContent = <img src={post.url} />;
+      innerContent = (
+        <div>
+          <p>
+            <strong>{this.getNickname(post.createdBy)}</strong> added a photo:
+          </p>
+          <img src={post.url} />
+        </div>
+      );
     }
 
     const content = (

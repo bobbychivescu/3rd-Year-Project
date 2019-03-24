@@ -54,7 +54,7 @@ const deleteStale = async groups => {
   const flatList = [].concat.apply([], list);
 
   flatList.forEach(item => {
-    Storage.remove(item.key).then(resp => console.log(resp));
+    Storage.remove(item.key);
   });
 
   if (flatList.length > 0) {
@@ -82,7 +82,7 @@ const createGroup = async group => {
       body: {
         users: group.members
       }
-    }).then(data => console.log('from callback' + JSON.stringify(data)));
+    });
   }
 
   return true;
@@ -105,7 +105,7 @@ const addMembers = async (group, members) => {
     body: {
       users: [...group.members.values, ...members]
     }
-  }).then(data => console.log('from callback' + JSON.stringify(data)));
+  });
 
   return await API.put('3YP', '/groups/add/' + group.name, {
     body: { members: members }

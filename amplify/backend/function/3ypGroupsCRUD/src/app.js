@@ -55,7 +55,6 @@ app.get(path, function(req, res) {
       const now = new Date();
       const result = data.Responses[tableName].filter(item => now < new Date(item.endDate));
       const toDelete = data.Responses[tableName].filter(item => now >= new Date(item.endDate)).map(item => item.name);
-      console.log(toDelete)
 
       if(toDelete.length > 0){
 
@@ -70,7 +69,6 @@ app.get(path, function(req, res) {
             };
           })
         };
-        console.log(JSON.stringify(delParams));
         dynamodb.batchWrite({ RequestItems: delParams }, (err, data) => {
           if (err) {
             console.log(err, err.stack)
@@ -149,10 +147,8 @@ const actionGroupToUsers = (verb, group, users) => {
 
   users.forEach(member => {
     params.Key.userId = member;
-    console.log(params);
     dynamodb.update(params, (err, data) => {
       if(err) console.log(err, err.stack);
-      else console.log(data);
     })
   })
 };
@@ -181,7 +177,6 @@ app.put(path +'/:action' + hashKeyPath, function(req, res) {
     ReturnValues: 'UPDATED_NEW'
   };
 
-  console.log(putItemParams);
   dynamodb.update(putItemParams, (err, data) => {
     if(err) {
       res.json({error: err, url: req.url});
@@ -230,7 +225,6 @@ app.put(path + hashKeyPath, function(req, res) {
   putItemParams['ConditionExpression'] = 'createdBy = :createdBy';
   putItemParams['ReturnValues'] = 'UPDATED_NEW';
 
-  console.log(putItemParams)
   if(expression.length > 4) {
     dynamodb.update(putItemParams, (err, data) => {
       if(err) {

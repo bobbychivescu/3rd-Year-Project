@@ -21,7 +21,6 @@ class EditGroup extends Component {
       membersToRemove: [],
       date: d
     };
-    console.log(props);
   }
 
   changeDesc = e => this.setState({ desc: e.target.value });
@@ -30,7 +29,9 @@ class EditGroup extends Component {
 
   togglePrivate = () => this.setState({ isPrivate: !this.state.isPrivate });
 
-  addMember = id => this.setState({ members: [...this.state.members, id] });
+  addMember = id => {
+    this.setState({ members: [...this.state.members, id] });
+  };
 
   removeMember = id =>
     this.setState({ membersToRemove: [...this.state.membersToRemove, id] });

@@ -34,7 +34,6 @@ class App extends Component {
 
   //implement periodic all update
   async componentDidMount() {
-    console.log(this.props);
     this.setState({ user: await getUser() });
   }
 
@@ -60,8 +59,8 @@ class App extends Component {
     return (
       <div>
         <nav className="topbar">
-          <a className="navbar-brand ml-2" href="#">
-            3YP
+          <a className="navbar-brand ml-2 orange" href="#">
+            3YePee
           </a>
           {this.state.user && (
             <Notifications

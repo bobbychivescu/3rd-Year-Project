@@ -27,12 +27,14 @@ class SelectMembers extends Component {
     return (
       <Container>
         <Input
-          className="half-on-desktop my-1"
+          className="half-on-desktop my-1 mr-1 d-inline-block"
           placeholder="search by username, email..."
           onChange={this.changeQuery}
           onFocus={this.toggleContacts}
-          onBlur={this.toggleBack}
         />
+        <Button onClick={this.toggleBack} className="bg-orange">
+          Hide
+        </Button>
         <Row>
           {this.state.focused &&
             this.props.contacts

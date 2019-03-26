@@ -73,6 +73,7 @@ class Contacts extends Component {
                       src={item.img}
                       onError={this.onError}
                       className="hide-in-mobile"
+                      style={{ height: '250px' }}
                     />
                     <CardBody>
                       <h3>{item.nickname}</h3>
@@ -107,7 +108,12 @@ class Contacts extends Component {
                       <ModalBody>
                         {item.emailPublic && <h5>{item.email}</h5>}
                         <p>{item.bio}</p>
-                        <img alt="" src={item.img} onError={this.onError} />
+                        <img
+                          alt=""
+                          src={item.img}
+                          onError={this.onError}
+                          style={{ height: '300px' }}
+                        />
                       </ModalBody>
                     </Modal>
                   </Card>

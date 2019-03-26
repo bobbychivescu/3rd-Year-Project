@@ -32,7 +32,6 @@ const Item = props => {
 class App extends Component {
   state = {};
 
-  //implement periodic all update
   async componentDidMount() {
     await this.updateUser();
     setInterval(this.updateUser, 5 * 60 * 1000);
@@ -54,7 +53,6 @@ class App extends Component {
 
   updateUser = async () => {
     this.setState({ user: await getUser() });
-    console.log('updated');
   };
 
   setAppState = state => {

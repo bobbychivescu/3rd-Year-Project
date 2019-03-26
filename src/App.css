@@ -58,8 +58,14 @@ body {
 }
 
 img {
+  width: 400px;
+  height: 400px;
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
+
+  border: 2px solid #e3eaa7 !important;
+  border-radius: 5%;
 }
 
 .comment-input {
@@ -142,12 +148,6 @@ img {
 
 #file {
   display: none;
-}
-
-.profile-pic {
-  border: 2px solid #ddd;
-  border-radius: 5%;
-  padding: 5px;
 }
 
 .bej {

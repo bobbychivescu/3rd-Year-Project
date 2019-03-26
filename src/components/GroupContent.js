@@ -84,7 +84,7 @@ class GroupContent extends Component {
 
   getFileString = () => {
     let files = '';
-    this.state.files.map(file => {
+    this.state.files.forEach(file => {
       files += file.name + ', ';
     });
     return files.substr(0, files.length - 2);

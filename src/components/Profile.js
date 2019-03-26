@@ -52,12 +52,7 @@ class Profile extends Component {
       <Container>
         <Row>
           <Col xs="12" md="5" className="my-3 text-center">
-            <img
-              alt=""
-              src={this.state.imgUrl}
-              onError={this.onError}
-              className="profile-pic"
-            />
+            <img alt="" src={this.state.imgUrl} onError={this.onError} />
             <input
               type="file"
               id="file"

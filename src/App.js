@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Amplify, { API, Auth } from 'aws-amplify';
+import Amplify from 'aws-amplify';
 import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 import { Route, Switch, Link } from 'react-router-dom';
@@ -23,7 +23,7 @@ const Item = props => {
   return (
     <NavItem className="text-center">
       <Link to={props.path} className="orange">
-        <Icon size="32" icon={props.icon} />
+        <Icon size="50" icon={props.icon} />
       </Link>
     </NavItem>
   );
@@ -34,7 +34,8 @@ class App extends Component {
 
   //implement periodic all update
   async componentDidMount() {
-    this.setState({ user: await getUser() });
+    await this.updateUser();
+    setInterval(this.updateUser, 5 * 60 * 1000);
   }
 
   async componentDidUpdate() {
@@ -50,6 +51,11 @@ class App extends Component {
       removeStaleData(this.state, this.setAppState);
     }
   }
+
+  updateUser = async () => {
+    this.setState({ user: await getUser() });
+    console.log('updated');
+  };
 
   setAppState = state => {
     this.setState(state);

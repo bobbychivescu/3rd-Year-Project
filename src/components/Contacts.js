@@ -107,7 +107,7 @@ class Contacts extends Component {
                       <ModalBody>
                         {item.emailPublic && <h5>{item.email}</h5>}
                         <p>{item.bio}</p>
-                        <img src={item.img} onError={this.onError} />
+                        <img alt="" src={item.img} onError={this.onError} />
                       </ModalBody>
                     </Modal>
                   </Card>

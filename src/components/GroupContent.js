@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Container, Row, Col, Spinner } from 'reactstrap';
+import { Button, Spinner } from 'reactstrap';
 import Dropzone from 'react-dropzone';
-import { v1 } from 'uuid';
 import {
   createTextPost,
   createFilePost,

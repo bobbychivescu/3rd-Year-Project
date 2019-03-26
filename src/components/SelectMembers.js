@@ -6,7 +6,6 @@ import {
   CardSubtitle,
   Container,
   Row,
-  COl,
   Input,
   Col
 } from 'reactstrap';

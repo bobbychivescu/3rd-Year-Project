@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { Button, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { Auth, API, Storage } from 'aws-amplify';
 
 class Settings extends Component {

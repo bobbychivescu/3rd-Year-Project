@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Col, Row, Spinner } from 'reactstrap';
+import { Container, Col, Row } from 'reactstrap';
 import ProfileInfo from './ProfileInfo';
 import Contacts from './Contacts';
 import { Storage } from 'aws-amplify';
@@ -53,6 +53,7 @@ class Profile extends Component {
         <Row>
           <Col xs="12" md="5" className="my-3 text-center">
             <img
+              alt=""
               src={this.state.imgUrl}
               onError={this.onError}
               className="profile-pic"

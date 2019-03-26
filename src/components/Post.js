@@ -69,7 +69,7 @@ class Post extends Component {
           <p>
             <strong>{this.getNickname(post.createdBy)}</strong> added a photo:
           </p>
-          <img src={post.url} />
+          <img alt="" src={post.url} />
         </div>
       );
     }
